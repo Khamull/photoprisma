@@ -10,7 +10,7 @@ Statement st = null;
 
 //CONEXAO PARA PC-ALMIR
 Class.forName("org.gjt.mm.mysql.Driver");
-con=DriverManager.getConnection("jdbc:mysql://localhost/fortesystem16","root","");
+con=DriverManager.getConnection("jdbc:mysql://localhost/photoprisma","root","");
 st=con.createStatement();
 
 %>
