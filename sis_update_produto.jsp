@@ -1,4 +1,4 @@
-<%@ page errorPage="index.jsp?erro=3" %>
+<!-- %@ page errorPage="index.jsp?erro=3" %-->
 <%@ include file="inc/seguranca.jsp" %>
 <%@ page import="java.sql.*" %>
 <%@ include file="inc/conexao.jsp" %>
@@ -15,6 +15,9 @@
 //Instancia objetos do tipo Statment
 Statement st01 = con.createStatement();
 Statement st02 = con.createStatement();
+Statement st03 = con.createStatement();
+Statement st04 = con.createStatement();
+Statement st05 = con.createStatement();
 %>
 
 
@@ -23,6 +26,9 @@ Statement st02 = con.createStatement();
 ResultSet rs = null;
 ResultSet rs01 = null;
 ResultSet rs02 = null;
+ResultSet rs03 = null;
+ResultSet rs04 = null;
+ResultSet rs05 = null;
 %>
 
 <%
@@ -36,7 +42,8 @@ rs = st.executeQuery(tipo.listaTiposAtivos());
 //Pesquisa os Fornecedores Ativos
 rs01 = st01.executeQuery(fornecedor.listaFornecedoresAtivos());
 //Pesquisa os dados do Produto
-rs02 = st02.executeQuery(produto.listaProdutosIDNova());
+rs02 = st02.executeQuery(produto.listaProdutosPorID());
+
 %>
 
 <%
@@ -49,6 +56,23 @@ if(request.getParameter("msg") != null){
 	numeroMsg = Integer.parseInt(request.getParameter("msg"));
 	msg = produto.mensagem(numeroMsg);
 }
+
+
+//Recupera lista de produtos que estejam cadastrados como materiais
+String select = "<select name=\"materiaisSel[]\"id=\"msel\"  style=\"max-width: 150px\" onchange=\"recuperaCusto(this, 0)\"><option value=\"-1\">...</option>";
+String select_javascript = "";
+rs03 = st03.executeQuery(produto.listaProdutosMateriais());
+String jsct = "";
+jsct = "\\"+"\""; 
+while(rs03.next())
+{
+	select += "<option value=\""+rs03.getString("produtoID")+"\">"+rs03.getString("nome")+"</option>";
+	select_javascript += "<option value=\""+rs03.getString("produtoID")+"\">"+rs03.getString("nome")+"</option>";
+}
+select += "</select>";
+select_javascript += "</select>";
+select_javascript = select_javascript.replace("\"", jsct);
+
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -99,7 +123,12 @@ function verForm(){
 		return false;
 	}
 	
-
+	if(document.form1.precoVenda.value == "0.00"){
+		alert("Informe o preço a ser Vendido!");
+		document.form1.precoVenda.focus();
+		return false;
+	}
+	
 	if(document.form1.estoqueMinimo.value == ""){
 		alert("Qual será o valor Mínimo em Estoque?");
 		document.form1.estoqueMinimo.focus();
@@ -122,20 +151,20 @@ if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=
 
 function verMargem(){
 var c = document.form1.precoCusto.value;
-//var i = document.form1.precoVenda.value;
+var i = document.form1.precoVenda.value;
 
 c = c.replace(",",".");
 i = i.replace(",",".");
 
-/*var v = parseFloat(i*100)/parseFloat(c) - 100;
+var v = parseFloat(i*100)/parseFloat(c) - 100;
 v = parseFloat(v);
 document.form1.lucro.value = v.toFixed(2);
-}*/
+}
 
 
 function verPorcentagem(){
 	var a = document.form1.precoCusto.value;
-	//var x = document.form1.lucro.value;
+	var x = document.form1.lucro.value;
 	
 	a = a.replace(",",".");
 	x = x.replace(",",".");
@@ -144,19 +173,19 @@ function verPorcentagem(){
 	
 	var y = parseFloat(a)+parseFloat(b);
 	
-	//document.form1.precoVenda.value = y.toFixed(2);
+	document.form1.precoVenda.value = y.toFixed(2);
 }
 
 function verPonto()
 {
 var precoCusto = document.form1.precoCusto.value;
-//var precoVenda = document.form1.precoVenda.value;
+var precoVenda = document.form1.precoVenda.value;
 
 precoCusto = precoCusto.replace(",",".");
 precoVenda = precoVenda.replace(",","."); 
 
 document.form1.precoCusto.value = precoCusto;
-//document.form1.precoVenda.value = precoVenda;
+document.form1.precoVenda.value = precoVenda;
 }
 
 
@@ -172,10 +201,160 @@ function venda(){
 	var p2 = p1.toFixed(2);
 	
 	//Atribui o valor ao outro Campo
-	//document.form1.precoVenda.value = p2;
+	document.form1.precoVenda.value = p2;
+	
+}
+function validaMaterial()//Caso o produto que esta sendo cadastrado seja um material/insumo de alguma coisa, ele não possuirá preço de venda, somente de custo e valor de estoque mínimo
+{
+	var material = document.getElementById("material").checked;
+	if(material == true)
+		{
+				document.getElementById("possuiMaterial").checked = false;
+				controle = 1;
+		}
+	document.getElementById("precoVenda").readOnly = true;
+	document.getElementById("lucro").readOnly = true;
+	document.getElementById("precoCusto").readOnly = false;
+	document.getElementById("divMaterial").style.display = "none";
+	
+}
+function validaPossuir()//caso o produto cadastrado possua materiais, o preço de custo será definido pelos materiais selecionados, e será inserido o valor de venda deste produtol
+{
+	if(document.getElementById("possuiMaterial").checked == true)
+	{
+		
+			document.getElementById("material").checked = false;
+			controle = 0;
+			document.getElementById("precoVenda").readOnly = false;
+			document.getElementById("lucro").readOnly = false;
+			document.getElementById("precoCusto").readOnly = true;
+			document.getElementById("divMaterial").style.display = "inline";
+	}
+	else{
+		document.getElementById("divMaterial").style.display = "none";
+		document.getElementById("precoVenda").readOnly = false;
+		document.getElementById("lucro").readOnly = false;
+		document.getElementById("precoCusto").readOnly = false;
+	}
+	
+}
+var contador = 0;
+function addRow(tableID){//Adiciona linhas a tabela baseada na primeira linha existente por padrão
+	contador++;
+	var table=document.getElementById(tableID);
+	var rowCount=table.rows.length;
+	var row=table.insertRow(rowCount);
+	var colCount=table.rows[0].cells.length;
+	for(var i=0;i<colCount;i++){
+		if(i !=3 && i != 4 && i != 1 && i != 2 && i != 5){
+			var newcell=row.insertCell(i);
+			//newcell.outterHTMLr=table.rows[1].cells[i].outterHTML;
+			newcell.innerHTML=table.rows[1].cells[i].innerHTML;
+			
+			switch(newcell.childNodes[0].type){
+				case"text":newcell.childNodes[0].value="";
+				break;
+				case"checkbox":newcell.childNodes[0].checked=false;
+				break;
+				case"select-one":newcell.childNodes[0].selectedIndex=0;
+				break;
+			}
+		}
+		else
+		{
+			var newcell=row.insertCell(i);
+			if(i == 3)
+				newcell.innerHTML="<div id=\"un"+rowCount+"\"></div>";
+			if(i == 4)
+				newcell.innerHTML="<div id=\"valCusto"+rowCount+"\"></div>"
+			if(i == 5)
+				newcell.innerHTML="<div id=\"valCustoTot"+rowCount+"\"></div>"
+			if(i == 1)
+				newcell.innerHTML="<select name=\"materiaisSel[]\"id=\"msel\"  style=\"max-width: 150px\" onchange=\"recuperaCusto(this, "+rowCount+")\"><option value=\"-1\">...</option><%=select_javascript%>";
+			if(i == 2)
+				newcell.innerHTML="<strong><input type=\"number\" name=\"qtdUtilizar[]\" min=\"1\" value=\"1\" step=\"0.01\" style=\"text-align: right; max-width: 50px;\" onchange=\"multiplica(this,"+rowCount+")\" /></strong>";
+		}
+		
+	}
+	
+}
+function deleteRow(tableID){//Remove linhas da tabela
+	try{
+			var table=document.getElementById(tableID);
+			var rowCount=table.rows.length;
+			for(var i=0;i<rowCount;i++){
+				var row=table.rows[i];
+				var chkbox=row.cells[0].childNodes[0];
+				if(null!=chkbox&&true==chkbox.checked){
+					if(rowCount<=2){
+						alert("Não é possível deletar todas as linhas!.");
+						break;
+					}
+				table.deleteRow(i);
+				rowCount--;
+				i--;
+				}
+			}
+			SomaTudoAutomático();
+		}catch(e){
+			alert(e);
+		}
+		
+}
+function recuperaCusto (obj, id){//recupera preço de venda por produto
+	
+	//var valor = document.getElementById(idValor.id);
+	//valor.value = "1000,00";
+	$.post('sis_recupera_preco_venda.jsp', {materialID: obj.selectedOptions[0].value}, function(data){
+		var div1 = document.getElementById("un"+id);
+		var div2 = document.getElementById("valCusto"+id);
+		var div3 = document.getElementById("valCustoTot"+id);
+		var splt = data.split(",");
+	    div1.textContent = splt[1];
+	    div2.textContent = splt[0];
+	    div3.textContent = splt[0];
+	    SomaTudoAutomático();
+	});
+	
+}
+function multiplica(obj, id){
+	
+	var div2 = document.getElementById("valCusto"+id);
+	var div3 = document.getElementById("valCustoTot"+id);
+	var qtd = obj.value;
+	var total = obj.value * div2.innerText; 
+	div3.textContent = total.toFixed(2);
+	SomaTudoAutomático();
+}
+function SomaTudoAutomático(){
+	var tabela = document.getElementById("materiaisSelecionados");
+	var rowCount=tabela.rows.length;
+	var total = 0;
+	var valorAtual = 0;
+	for(i = 1; i < rowCount; i++){
+		try{
+			if(isNumber(tabela.rows[i].cells[5].innerText.trim())){
+			
+				valorAtual = valorAtual + parseFloat(tabela.rows[i].cells[5].innerText.trim());//Recupera o valor das divs de preço de custo total para somar ao total de custo
+			}
+			
+		}
+		catch (e) {
+			// TODO: handle exception
+		}
+	}
+	document.getElementById("precoCusto").value = valorAtual.toFixed(2);
+	venda();
 	
 }
 
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function getMoney(valor){
+	return parseFloat(valor)*100;
+}
 </script>
 
 <script type="text/javascript" src="js/jquery.js"></script>
@@ -206,8 +385,9 @@ function venda(){
 <table width="985" align="center" height="440">
 <tr>
  <td height="25" bgcolor="#EEEEEE">
- <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_produtos.jsp'" value="Lista de Materiais" />&nbsp;
-
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_produtos.jsp'" value="Lista de Produtos" />&nbsp;
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_tipo.jsp'" value="+ Novo Tipo de Produto" />&nbsp;
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_tipos.jsp'" value="Lista Tipos de Produto" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_estoque.jsp'" value="Alimentar Estoque" />
  </td>
 </tr>
@@ -226,9 +406,22 @@ function venda(){
    <td colspan="6" align="center" bgcolor="#ff0000"><font color="#ffffff"><strong><%=msg %></strong></font></td>
   </tr>
  <%} %>
+ 
+ 	
   <tr>
-   <td colspan="6" align="center"><strong>CADASTRO DE MATERIAIS</strong></td>
+   <td colspan="6" align="center"><strong>CADASTRO DE PRODUTO</strong></td>
   </tr>
+  <tr>
+ 		<%if(rs02.getString("utilizacao").equals("M")) {%>
+    		<td align="left" colspan="2">É Material <input type="checkbox" name="material" value="1" id="material" onchange="validaMaterial()" checked="checked"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial" value="2" onchange="validaPossuir()"/></td>
+    	<%}
+    	if(rs02.getString("utilizacao").equals("PM")){ %>
+    		<td align="left" colspan="2">É Material <input type="checkbox" name="material" value="1" id="material" onchange="validaMaterial()"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial" value="2" onchange="validaPossuir()" checked="checked"/></td>
+    	<%} %>
+    	<%if(rs02.getString("utilizacao").equals("P")){ %>
+    		<td align="left" colspan="2">É Material <input type="checkbox" name="material" value="1" id="material" onchange="validaMaterial()"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial" value="2" onchange="validaPossuir()"/></td>
+    	<%} %>	
+    </tr>
   <tr>
     <td colspan="6" align="left">&nbsp;</td>
     </tr>
@@ -236,13 +429,20 @@ function venda(){
     <td width="107" align="left">Tipo de Produto</td>
     <td width="321" align="left">
     <select name="tipoprodutoID" style="width:274px">
+     <option value="<%=rs02.getString("tipoprodutoID") %>"><%=rs02.getString("tipo") %></option>
      <%while (rs.next()){ %>
      <option value="<%=rs.getString("tipoprodutoID") %>"><%=rs.getString("tipo") %></option>
      <%} %>
     </select>
     </td>
-    <td width="92" align="left"></td>
+    <td width="92" align="left">Fornecedor</td>
     <td colspan="3" align="left">
+    <select name="fornecedorID" style="width:287px">
+     <option value="<%=rs02.getString("fornecedorID") %>"><%=rs02.getString("fornNomeFantasia") %></option>
+     <%while(rs01.next()){ %>
+     <option value="<%=rs01.getString("fornecedorID") %>"><%=rs01.getString("fornNomeFantasia") %></option>
+     <%} %>
+    </select>
     </td>
   </tr>
   <tr>
@@ -265,15 +465,16 @@ function venda(){
   </tr>
   <tr>
     <td align="left">Pre&ccedil;o de Custo</td>
-    <td align="left"><input name="precoCusto" type="text" value="<%=rs02.getString("precoCusto") %>" size="20" maxlength="10" onkeypress="venda(); verPonto(); return numeroVirgula(this);"  onblur="verPonto(); venda()"/></td>
-    <td align="left"></td>
-    <td align="left"></td>
-    <td align="center"></td>
-    <td align="left"></td>
+    <td align="left"><input name="precoCusto" type="text" value="<%=rs02.getString("precoCusto") %>" id="precoCusto" size="20" maxlength="10" onkeypress="venda(); verPonto(); return numeroVirgula(this);"  onblur="verPonto(); venda()"/></td>
+    <td align="left">Pre&ccedil;o Venda</td>
+    <td align="left"><input name="precoVenda" type="text" value="<%=rs02.getString("preco") %>" id="precoVenda" size="20" maxlength="10" onkeypress="verMargem(); verPonto(); return numeroVirgula(this);" onblur="verPonto(); verMargem()" /></td>
+    <td align="center" bgcolor="#00CC33"><strong>Lucro</strong></td>
+    <td align="left"><input name="lucro" id="lucro" style="border:2px dashed #00CC33; padding-left:4px; height:18px;" onblur="verPorcentagem()" onkeypress="verPorcentagem(); verPonto();" type="text" size="5" maxlength="3" value="<%=rs02.getString("lucro") %>" />
+      <strong>%</strong></td>
   </tr>
   <tr>
     <td align="left">Estoque M&iacute;nimo</td>
-    <td align="left"><input type="text" name="estoqueMinimo" size="20" maxlength="5" value="<%=rs02.getString("estoqueMinimo") %>" onKeyPress="return numero(this)"/> <input type="hidden" name="estoque" value="<%=rs02.getString("quantidade") %>" /></td>
+    <td align="left"><input type="text" name="estoqueMinimo" size="20" maxlength="5" value="<%=rs02.getString("estoqueMinimo") %>" onKeyPress="return numero(this)"/> <input type="hidden" name="estoque" value="<%=rs02.getString("estoque") %>" /></td>
     <td align="left"></td>
     <td colspan="3" align="left"></td>
   </tr>
@@ -284,6 +485,118 @@ function venda(){
     <td colspan="3" align="left"></td>
     
   </tr>
+  <%if(rs02.getString("utilizacao").equals("PM")){%>
+  <tr>
+  	<td colspan="5" align="center">
+  		<div id="divMaterial" style="display: inline">
+  			<input type="button" value="+" onclick="addRow('materiaisSelecionados')"/>
+  				 <input type="button" value="-" onclick="deleteRow('materiaisSelecionados')"/>
+  			<table id="materiaisSelecionados" class="tabela" name="materiaisSelecionados" cellspacing="2" border="1" cellpadding="5" align="center" style="tbody tr:nth-child(odd){background: #eee;}">
+  				<tr>
+  					<td></td>
+  					<td>
+  						<strong>Nome</strong>
+  					</td>
+  					<td>
+  						<strong>Qtd a ser Usada</strong>
+  					</td>
+  					<td>
+  						<strong>Unidade</strong>
+  					</td>
+  					<td>
+  						<strong>Valor Custo</strong>
+  					</td>
+  					<td>
+  						<strong>Custo Total Unitário</strong>
+  					</td>
+  				</tr>
+  				<%rs04 = st04.executeQuery(produto.listaMateriais(rs02.getString("idsMateriais")));
+  				int contador = 0;
+  				String [] dinossauro = rs02.getString("qtdUtilizar").split("#");
+  				while(rs04.next()){
+  				%>
+	  				<tr>
+	  					<td><input type="checkbox" name="chk_" onclick="")/></td>
+	  					<td >
+	  					<%rs05 = st05.executeQuery(produto.listaProdutosMateriaisParaUpdate()); %>
+	  					<select name="materiaisSel[]"id="msel"  style="max-width: 150px" onchange="recuperaCusto(this, <%=contador%>)">
+	  						<option value="-1">...</option>
+	  						<option value="<%=rs04.getString("produtoID")%>" selected="selected"><%=rs04.getString("nome") %></option>
+	  						<% produto.produtoID = Integer.parseInt(rs04.getString("produtoID"));
+	  						rs05 = st05.executeQuery(produto.listaProdutosMateriaisParaUpdate());
+	  						while(rs05.next()) {%>
+	  							<option value="<%=rs05.getString("produtoID")%>" selected="selected"><%=rs05.getString("nome") %></option>
+	  						<%} %>
+	  					</select>	
+	  					</td>
+	  					<td>
+	  						<strong><input type="number" name="qtdUtilizar[]" min="1" value="<%=dinossauro[contador] %>" step="0.01" style="text-align: right; max-width: 50px;" onchange="multiplica(this,0)"/></strong>
+	  					</td>
+	  					<td>
+	  						<div id="un0"><%=rs04.getString("unidade") %></div>
+	  					</td>
+	  					<td>
+	  						<div id="valCusto<%=contador%>"><%=rs04.getString("precoCusto") %></div>
+	  					</td>
+	  					<td>
+	  						<div id="valCustoTot<%=contador%>"><%=rs04.getFloat("precoCusto")*Float.parseFloat(dinossauro[contador]) %></div>
+	  					</td>
+	  				</tr>
+  				<%
+  				contador++;} %>
+  			</table>
+  		</div>
+  	</td>
+  </tr>
+  <%}else{ %>
+  <tr>
+  	<td colspan="5" align="center">
+  		<div id="divMaterial" style="display: none">
+  			<input type="button" value="+" onclick="addRow('materiaisSelecionados')"/>
+  				 <input type="button" value="-" onclick="deleteRow('materiaisSelecionados')"/>
+  			<table id="materiaisSelecionados" class="tabela" name="materiaisSelecionados" cellspacing="2" border="1" cellpadding="5" align="center" style="tbody tr:nth-child(odd){background: #eee;}">
+  				<tr>
+  					<td></td>
+  					<td>
+  						<strong>Nome</strong>
+  					</td>
+  					<td>
+  						<strong>Qtd a ser Usada</strong>
+  					</td>
+  					<td>
+  						<strong>Unidade</strong>
+  					</td>
+  					<td>
+  						<strong>Valor Custo</strong>
+  					</td>
+  					<td>
+  						<strong>Custo Total Unitário</strong>
+  					</td>
+  				</tr>
+  				<tr>
+  					<td><input type="checkbox" name="chk_" onclick="")/></td>
+  					<td >
+  						<%=select %>
+  					</td>
+  					<td>
+  						<strong><input type="number" name="qtdUtilizar[]" min="1" value="1" step="0.01" style="text-align: right; max-width: 50px;" onchange="multiplica(this,0)"/></strong>
+  						
+  					</td>
+  					<td>
+  						<div id="un0"></div>
+  					</td>
+  					<td>
+  						<div id="valCusto0"></div>
+  					</td>
+  					<td>
+  						<div id="valCustoTot0"></div>
+  					</td>
+  				</tr>
+  			</table>
+  		</div>
+  	</td>
+  </tr>
+  <%} %>
   <tr>
    <td colspan="6" align="center">
    <input name="CADASTRAR" type="submit" class="botao" value="Salvar" />&nbsp;

@@ -14,12 +14,14 @@
 <%
 //Instancia objeto do tipo Statment
 Statement st01 = con.createStatement();
+Statement st02 = con.createStatement();
 %>
 
 <%
 //Instancia objetos do tipo ResultSet para receber resultado de uma Consulta
 ResultSet rs = null;
 ResultSet rs01 = null;
+ResultSet rs02 = null;
 %>
 
 <%
@@ -39,6 +41,20 @@ if(request.getParameter("msg") != null){
 	numeroMsg = Integer.parseInt(request.getParameter("msg"));
 	msg = produto.mensagem(numeroMsg);
 }
+//Recupera lista de produtos que estejam cadastrados como materiais
+String select = "<select name=\"materiaisSel[]\"id=\"msel\"  style=\"max-width: 150px\" onchange=\"recuperaCusto(this, 0)\"><option value=\"-1\">...</option>";
+String select_javascript = "";
+rs02 = st02.executeQuery(produto.listaProdutosMateriais());
+String jsct = "";
+jsct = "\\"+"\""; 
+while(rs02.next())
+{
+	select += "<option value=\""+rs02.getString("produtoID")+"\">"+rs02.getString("nome")+"</option>";
+	select_javascript += "<option value=\""+rs02.getString("produtoID")+"\">"+rs02.getString("nome")+"</option>";
+}
+select += "</select>";
+select_javascript += "</select>";
+select_javascript = select_javascript.replace("\"", jsct);
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -169,7 +185,157 @@ function venda(){
 	document.form1.precoVenda.value = p2;
 	
 }
+function validaMaterial()//Caso o produto que esta sendo cadastrado seja um material/insumo de alguma coisa, ele não possuirá preço de venda, somente de custo e valor de estoque mínimo
+{
+	var material = document.getElementById("material").checked;
+	if(material == true)
+		{
+				document.getElementById("possuiMaterial").checked = false;
+				controle = 1;
+		}
+	document.getElementById("precoVenda").readOnly = true;
+	document.getElementById("lucro").readOnly = true;
+	document.getElementById("precoCusto").readOnly = false;
+	document.getElementById("divMaterial").style.display = "none";
+	
+}
+function validaPossuir()//caso o produto cadastrado possua materiais, o preço de custo será definido pelos materiais selecionados, e será inserido o valor de venda deste produtol
+{
+	if(document.getElementById("possuiMaterial").checked == true)
+	{
+		
+			document.getElementById("material").checked = false;
+			controle = 0;
+			document.getElementById("precoVenda").readOnly = false;
+			document.getElementById("lucro").readOnly = false;
+			document.getElementById("precoCusto").readOnly = true;
+			document.getElementById("divMaterial").style.display = "inline";
+	}
+	else{
+		document.getElementById("divMaterial").style.display = "none";
+		document.getElementById("precoVenda").readOnly = false;
+		document.getElementById("lucro").readOnly = false;
+		document.getElementById("precoCusto").readOnly = false;
+	}
+	
+}
+var contador = 0;
+function addRow(tableID){//Adiciona linhas a tabela baseada na primeira linha existente por padrão
+	contador++;
+	var table=document.getElementById(tableID);
+	var rowCount=table.rows.length;
+	var row=table.insertRow(rowCount);
+	var colCount=table.rows[0].cells.length;
+	for(var i=0;i<colCount;i++){
+		if(i !=3 && i != 4 && i != 1 && i != 2 && i != 5){
+			var newcell=row.insertCell(i);
+			//newcell.outterHTMLr=table.rows[1].cells[i].outterHTML;
+			newcell.innerHTML=table.rows[1].cells[i].innerHTML;
+			
+			switch(newcell.childNodes[0].type){
+				case"text":newcell.childNodes[0].value="";
+				break;
+				case"checkbox":newcell.childNodes[0].checked=false;
+				break;
+				case"select-one":newcell.childNodes[0].selectedIndex=0;
+				break;
+			}
+		}
+		else
+		{
+			var newcell=row.insertCell(i);
+			if(i == 3)
+				newcell.innerHTML="<div id=\"un"+contador+"\"></div>";
+			if(i == 4)
+				newcell.innerHTML="<div id=\"valCusto"+contador+"\"></div>"
+			if(i == 5)
+				newcell.innerHTML="<div id=\"valCustoTot"+contador+"\"></div>"
+			if(i == 1)
+				newcell.innerHTML="<select name=\"materiaisSel[]\"id=\"msel\"  style=\"max-width: 150px\" onchange=\"recuperaCusto(this, "+contador+")\"><option value=\"-1\">...</option><%=select_javascript%>";
+			if(i == 2)
+				newcell.innerHTML="<strong><input type=\"number\" name=\"qtdUtilizar[]\" min=\"1\" value=\"1\" step=\"0.01\" style=\"text-align: right; max-width: 50px;\" onchange=\"multiplica(this,"+contador+")\" /></strong>";
+		}
+		
+	}
+	
+}
+function deleteRow(tableID){//Remove linhas da tabela
+	try{
+			var table=document.getElementById(tableID);
+			var rowCount=table.rows.length;
+			for(var i=0;i<rowCount;i++){
+				var row=table.rows[i];
+				var chkbox=row.cells[0].childNodes[0];
+				if(null!=chkbox&&true==chkbox.checked){
+					if(rowCount<=2){
+						alert("Não é possível deletar todas as linhas!.");
+						break;
+					}
+				table.deleteRow(i);
+				rowCount--;
+				i--;
+				}
+			}
+			SomaTudoAutomático();
+		}catch(e){
+			alert(e);
+		}
+		
+}
+function recuperaCusto (obj, id){//recupera preço de venda por produto
+	
+	//var valor = document.getElementById(idValor.id);
+	//valor.value = "1000,00";
+	$.post('sis_recupera_preco_venda.jsp', {materialID: obj.selectedOptions[0].value}, function(data){
+		var div1 = document.getElementById("un"+id);
+		var div2 = document.getElementById("valCusto"+id);
+		var div3 = document.getElementById("valCustoTot"+id);
+		var splt = data.split(",");
+	    div1.textContent = splt[1];
+	    div2.textContent = splt[0];
+	    div3.textContent = splt[0];
+	    SomaTudoAutomático();
+	});
+	
+}
+function multiplica(obj, id){
+	
+	var div2 = document.getElementById("valCusto"+id);
+	var div3 = document.getElementById("valCustoTot"+id);
+	var qtd = obj.value;
+	var total = obj.value * div2.innerText; 
+	div3.textContent = total.toFixed(2);
+	SomaTudoAutomático();
+}
+function SomaTudoAutomático(){
+	var tabela = document.getElementById("materiaisSelecionados");
+	var rowCount=tabela.rows.length;
+	var total = 0;
+	var valorAtual = 0;
+	for(i = 1; i < rowCount; i++){
+		try{
+			if(isNumber(tabela.rows[i].cells[5].innerText.trim())){
+			
+				valorAtual = valorAtual + parseFloat(tabela.rows[i].cells[5].innerText.trim());//Recupera o valor das divs de preço de custo total para somar ao total de custo
+			}
+			
+		}
+		catch (e) {
+			// TODO: handle exception
+		}
+	}
+	document.getElementById("precoCusto").value = valorAtual.toFixed(2);
+	venda();
+	
+}
 
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function getMoney(valor){
+	return parseFloat(valor)*100;
+}
 </script>
 
 <script type="text/javascript" src="js/jquery.js"></script>
@@ -225,6 +391,9 @@ function venda(){
   <tr>
     <td colspan="6" align="left">&nbsp;</td>
     </tr>
+    <tr>
+    	<td align="left" colspan="2">É Material <input type="checkbox" name="material" value="1" id="material" onchange="validaMaterial()"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial" value="2" onchange="validaPossuir()"/></td>
+    </tr>
   <tr>
     <td width="107" align="left">Tipo de Produto</td>
     <td width="321" align="left">
@@ -249,7 +418,7 @@ function venda(){
     <td align="left" valign="top">Nome do Produto</td>
     <td align="left"><input type="text" name="nome" maxlength="100" size="50" /></td>
     <td align="left">C&oacute;digo</td>
-    <td width="151" align="left"><input type="text" name="codigo" maxlength="15" size="20"></td>
+    <td width="151" align="left"><input type="text" name="codigo" maxlength="15" size="20"/></td>
     <td width="73" align="left">Unidade</td>
     <td width="78" align="left">
     <select name="unidade" style="width:55px">
@@ -260,22 +429,23 @@ function venda(){
      <option value="ML">ML</option>
      <option value="CX">CX</option>
      <option value="MT">MT</option>
+     <option value="MT">CM</option>
     </select>
     </td>
   </tr>
   <tr>
     <td align="left">Pre&ccedil;o de Custo</td>
-    <td align="left"><input name="precoCusto" type="text" value="0.00" size="20" maxlength="10" onkeypress="venda(); verPonto(); return numeroVirgula(this);"  onblur="verPonto(); venda()"/></td>
+    <td align="left"><input name="precoCusto" id="precoCusto" type="text" value="0.00" size="20" maxlength="10" onkeypress="venda(); verPonto(); return numeroVirgula(this);"  onblur="verPonto(); venda()"/></td>
     <td align="left">Pre&ccedil;o Venda</td>
-    <td align="left"><input name="precoVenda" type="text" value="0.00" size="20" maxlength="10" onkeypress="verMargem(); verPonto(); return numeroVirgula(this);" onblur="verPonto(); verMargem()" /></td>
+    <td align="left"><input name="precoVenda" id="precoVenda" type="text" value="0.00" size="20" maxlength="10" onkeypress="verMargem(); verPonto(); return numeroVirgula(this);" onblur="verPonto(); verMargem()" /></td>
     <td align="center" bgcolor="#00CC33"><strong>Lucro</strong></td>
-    <td align="left"><input name="lucro" type="text" style="border:2px dashed #00CC33; padding-left:4px; height:18px;" onblur="verPorcentagem()" onkeypress="verPorcentagem(); verPonto();" value="0.0" size="5" maxlength="3" />
+    <td align="left"><input name="lucro" id="lucro" type="text" style="border:2px dashed #00CC33; padding-left:4px; height:18px;" onblur="verPorcentagem()" onkeypress="verPorcentagem(); verPonto();" value="0.0" size="5" maxlength="3" />
       <strong>%</strong></td>
   </tr>
   <tr>
     <td align="left">Estoque M&iacute;nimo</td>
     <td align="left"><input type="text" name="estoqueMinimo" size="20" maxlength="5" onKeyPress="return numero(this)"/></td>
-    <td align="left"></td>
+    <td></td>
     <td colspan="3" align="left"></td>
   </tr>
   <tr>
@@ -284,6 +454,53 @@ function venda(){
     <td align="left"></td>
     <td colspan="3" align="left"></td>
     
+  </tr>
+  <tr>
+  	<td colspan="5" align="center">
+  		<div id="divMaterial" style="display: none">
+  			<input type="button" value="+" onclick="addRow('materiaisSelecionados')"/>
+  				 <input type="button" value="-" onclick="deleteRow('materiaisSelecionados')"/>
+  			<table id="materiaisSelecionados" class="tabela" name="materiaisSelecionados" cellspacing="2" border="1" cellpadding="5" align="center" style="tbody tr:nth-child(odd){background: #eee;}">
+  				<tr>
+  					<td></td>
+  					<td>
+  						<strong>Nome</strong>
+  					</td>
+  					<td>
+  						<strong>Qtd a ser Usada</strong>
+  					</td>
+  					<td>
+  						<strong>Unidade</strong>
+  					</td>
+  					<td>
+  						<strong>Valor Custo</strong>
+  					</td>
+  					<td>
+  						<strong>Custo Total Unitário</strong>
+  					</td>
+  				</tr>
+  				<tr>
+  					<td><input type="checkbox" name="chk_" onclick="")/></td>
+  					<td >
+  						<%=select %>
+  					</td>
+  					<td>
+  						<strong><input type="number" name="qtdUtilizar[]" min="1" value="1" step="0.01" style="text-align: right; max-width: 50px;" onchange="multiplica(this,0)"/></strong>
+  						
+  					</td>
+  					<td>
+  						<div id="un0"></div>
+  					</td>
+  					<td>
+  						<div id="valCusto0"></div>
+  					</td>
+  					<td>
+  						<div id="valCustoTot0"></div>
+  					</td>
+  				</tr>
+  			</table>
+  		</div>
+  	</td>
   </tr>
   <tr>
    <td colspan="6" align="center">

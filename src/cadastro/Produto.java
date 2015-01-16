@@ -13,6 +13,9 @@ public class Produto {
 	public int estoqueMinimo;
 	public float estoque;
 	public String lucro;
+	public String listaIDMaterias;
+	public String ListaQtdMatariais;
+	public String utilizacao;
 	
 	//Lista todos os Produtos
 	public String listaProdutos() {
@@ -24,7 +27,39 @@ public class Produto {
 		return pesquisaProduto;
 	}
 	
+	public String listaProdutosMateriais() {
+		String pesquisaProduto = "SELECT * ";
+		pesquisaProduto += " FROM produto ";
+		pesquisaProduto += " where utilizacao =  'M'";
+		pesquisaProduto += " ORDER BY nome ASC";
+		
+		return pesquisaProduto;
+	}
 	
+	public String listaProdutosMateriaisParaUpdate() {
+		String pesquisaProduto = "SELECT * ";
+		pesquisaProduto += " FROM produto ";
+		pesquisaProduto += " where utilizacao =  'M'";
+		pesquisaProduto += " and produtoID <>  '"+produtoID+"'";
+		pesquisaProduto += " ORDER BY nome ASC";
+		
+		return pesquisaProduto;
+	}
+	
+	public String listaMateriais(String in) {
+		String[] id = in.split("#");
+		String id_fim="";
+		for(int i = 0; i < id.length; i++){
+			id_fim += "'"+id[i]+"',";
+		}
+		String pesquisaProduto = "SELECT * ";
+		pesquisaProduto += " FROM produto ";
+		pesquisaProduto += " where utilizacao =  'M'";
+		pesquisaProduto += " and produtoID in ("+id_fim.substring(0, id_fim.length()-1)+")";
+		pesquisaProduto += " ORDER BY nome ASC";
+		
+		return pesquisaProduto;
+	}
 	
 	//MIX Publicidade Lista de Produtos
 	public String listaProdutosNova() {
@@ -53,7 +88,7 @@ public class Produto {
 	public String listaPrecosporID() {
 		//SELECT distinct(produto.nome), estoque.produtoID, produto.codigo, produto.estoque, produto.estoqueMinimo, ROUND(AVG(estoque.precoCusto),2) as precoCusto, estoque.unidade FROM estoque inner join produto on estoque.produtoID = produto.produtoID
 		//group by produto.nome
-		String pesquisaProduto = " SELECT preco";
+		String pesquisaProduto = " SELECT precoCusto, unidade";
 		pesquisaProduto += " FROM produto ";
 		pesquisaProduto += " WHERE produto.produtoID = '"+produtoID+"'";
 		
@@ -214,6 +249,22 @@ public class Produto {
 		return salvaProd;
 	}
 	
+	public String salvaProdutoMatereial() {
+		String salvaProd = "INSERT INTO produto ";
+		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, nome, codigo, unidade, precoCusto, preco,estoqueminimo, estoque, lucro) VALUES";
+		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"','"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"','"+preco+"', '"+estoqueMinimo+"', '"+estoque+"','"+lucro+"') ";
+		
+		return salvaProd;
+	}
+	
+	public String salvaProdutoPossuiMaterial() {
+		String salvaProd = "INSERT INTO produto ";
+		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, qtdUtilizar, idsMateriais, nome, codigo, unidade, precoCusto, preco, estoqueminimo, estoque, lucro) VALUES";
+		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"', '"+ListaQtdMatariais+"', '"+listaIDMaterias+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"' ) ";
+		
+		return salvaProd;
+	}
+	
 	public String salvaMateriaisServico() {
 		String salvaProd = "INSERT INTO servicomateriais ";
 		salvaProd += "(tipoprodutoID, fornecedorID, nome, codigo, unidade, precoCusto, preco, estoqueminimo, estoque, lucro) VALUES";
@@ -227,7 +278,9 @@ public class Produto {
 		String alterProd = "UPDATE produto SET ";
 		alterProd += "tipoprodutoID = '"+tipo.tipoProdutoID+"', fornecedorID = '"+fornecedor.fornecedorID+"', nome = '"+nome+"', codigo = '"+codigo+"', ";
 		alterProd += "unidade = '"+unidade+"', precoCusto = '"+precoCusto+"', preco = '"+preco+"', estoqueminimo = '"+estoqueMinimo+"', ";
-		alterProd += "estoque = '"+estoque+"', lucro = '"+lucro+"' ";
+		alterProd += "estoque = '"+estoque+"', lucro = '"+lucro+"', ";
+		alterProd += "utilizacao = '"+utilizacao+"', qtdUtilizar = '"+ListaQtdMatariais+"', ";
+		alterProd += "idsMateriais = '"+listaIDMaterias+"' ";
 		alterProd += "WHERE produtoID = '"+produtoID+"'";
 		
 		return alterProd;

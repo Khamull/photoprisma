@@ -12,7 +12,7 @@
   if(nivelfinal == 1 || nivelfinal == 2){ %>
   <a class="dock-item" href="sis_menu.jsp"><img src="ico/ico_menu.png" alt="Principal" /><span>Menu Principal</span></a> 
   <a class="dock-item" href="sis_view_usuarios.jsp"><img src="ico/ico_usuarios.png" alt="Usuarios" /><span>Usuários</span></a> 
-  <a class="dock-item" href="sis_view_op_produtos.jsp"><img src="ico/ico_produto.png" alt="Site" /><span>Materiais/Produtos</span></a>
+  <a class="dock-item" href="sis_view_produtos_separados.jsp"><img src="ico/ico_produto.png" alt="Site" /><span>Produtos</span></a>
   <a class="dock-item" href="sis_insert_novo_orcamento.jsp?orcamento=1"><img src="ico/ico_orcamento.png" alt="Relatorios" /><span>Or&ccedil;amentos</span></a> 
   <%if(request.getQueryString() != null){%>
   	<a class="dock-item" href="<%=request.getRequestURL()+"?"+request.getQueryString()%>"><img src="ico/ico_atualizar.png" alt="Atualizar" /><span>Atualizar</span></a> 

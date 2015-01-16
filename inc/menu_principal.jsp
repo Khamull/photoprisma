@@ -69,14 +69,14 @@ if(request.getParameter("msg") != null){
 	<td width="160" align="center"><a href="sis_view_servicos.jsp"><img src="ico/ico_servico.png" alt="" width="60" height="60" border="0" title="Serviços" /></a></td>
     <!-- <td width="160" align="center"><a href="javascript: window.open('http://www2.varzeapaulista.sp.gov.br:8080/issweb/login/login.aspx','NFE','toolbar=no,fullscreen=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,cop
 history=yes,width = 880px; height = 600px')"><img src="ico/ico_nfe.png" alt="" width="60" height="60" border="0" title="Nota Fiscal Eletronica" /></a></td>-->
-	<td width="160" align="center"><a href="sis_view_op_produtos.jsp"><img src="ico/ico_produto.png" width="60" height="60" border="0" title="Cadastrar Produtos" /></a></td>
+	<td width="160" align="center"><a href="sis_view_produtos_separados.jsp"><img src="ico/ico_produto.png" width="60" height="60" border="0" title="Cadastrar Produtos" /></a></td>
 	<td width="160" align="center"><a href="#"onclick="javascript: window.open('relatorios/rep_ordensdeservio.jsp', 'OS', 'width = 1056; height =1024; scrollbars=yes')"><img src="ico/ico_venda_ok.png" alt="" width="60" height="60" border="0" title="Vendas Concluidas" /></a></td>
     </tr>
    <tr>
     <td align="center">Caixa</td>
     <td align="center">Financeiro</td>
     <td align="center">Servi&ccedil;os</td>
-    <td align="center">Materias/Produtos</td>
+    <td align="center">Produtos</td>
     <td align="center">Vendas</td>
     </tr>
    <tr>

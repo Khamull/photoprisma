@@ -1,4 +1,4 @@
-
+<%@ page errorPage="index.jsp?erro=3" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.*" %>
 <%@ page import = "java.util.Date,java.text.SimpleDateFormat,java.text.ParseException"%>
@@ -47,11 +47,11 @@ if(request.getParameter("acao") != null){
 <%
 //Pesquisa Todos os Fornecedores ou busca por nome
 if(request.getParameter("nome") != null){
-	rs = st.executeQuery(produto.pesquisaProdutosNova(request.getParameter("nome")));
+	rs = st.executeQuery(produto.pesquisaProdutos(request.getParameter("nome")));
 }else if(request.getParameter("codigo") != null){
-	rs = st.executeQuery(produto.pesquisaProdutoPorCodigoNova(request.getParameter("codigo")));
+	rs = st.executeQuery(produto.pesquisaProdutoPorCodigo(request.getParameter("codigo")));
 }else{
-	rs = st.executeQuery(produto.listaProdutosNova());
+	rs = st.executeQuery(produto.listaProdutos());
 }
 
 %>
@@ -119,9 +119,9 @@ if(request.getParameter("msg") != null){
 <table width="985" align="center" height="440">
 <tr>
  <td height="25" bgcolor="#EEEEEE">
- <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_material.jsp'" value="+ Novo Material" />&nbsp;
- <!-- <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_tipo.jsp'" value="+ Novo Tipo de Produto" />&nbsp;-->
- <!-- <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_tipos.jsp'" value="Lista Tipos de Produto" />&nbsp;-->
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_produto.jsp'" value="+ Novo Produto" />&nbsp;
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_tipo.jsp'" value="+ Novo Tipo de Produto" />&nbsp;
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_tipos.jsp'" value="Lista Tipos de Produto" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_estoque.jsp'" value="Alimentar Estoque" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_produtos.jsp'" value="Ver Estoque Total" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_transferencia_estoque.jsp'" value="Transfer&ecirc;ncia" />&nbsp;
@@ -134,7 +134,7 @@ if(request.getParameter("msg") != null){
   <table width="940" align="center" cellpadding="0" cellspacing="0">
   <%if(rs02.next()){ %>
    <tr>
-    <td colspan="11" align="center"><strong>LISTA DE MATERIAIS UNIDADE: ( <%=rs02.getString("unidade") %> )</strong></td>
+    <td colspan="11" align="center"><strong>LISTA DE PRODUTOS UNIDADE: ( <%=rs02.getString("unidade") %> )</strong></td>
    </tr>
   <%} %>
    <tr>
@@ -187,11 +187,10 @@ if(request.getParameter("msg") != null){
    <tr bgcolor="#EEEEEE">
     <td width="80" align="left"><strong>Codigo</strong></td>
     <td width="200" align="left"><strong>Produto / Descri&ccedil;&atilde;o</strong></td>
-    <!-- <td width="160" align="left"><strong>Tipo</strong></td>-->
-    <td width="40" align="center"></td>
+    <td width="160" align="left"><strong>Tipo</strong></td>
     <td width="90" align="left"><strong>Preco</strong></td>
     <td width="70" align="center"><strong>Estoque</strong></td>
-    <td width="40" align="center"><strong>Un</strong></td>
+    <td width="40" align="center"></td>
     <td width="60" align="center"><strong>Es</strong></td>
     <td width="60" align="center"><strong>Ed</strong></td>
     <td width="60" align="center"><strong>At</strong></td>
@@ -221,7 +220,7 @@ Currency currency = Currency.getInstance("BRL");
 
 DecimalFormat formato = new DecimalFormat("R$ #,##0.00");
 
-valor = formato.format(rs.getDouble("precoCusto"));
+valor = formato.format(rs.getDouble("preco"));
 %>
 
 
@@ -237,7 +236,7 @@ rs01 = st01.executeQuery(produtoEstoque.pesquisaEstoque());
    <tr>
     <td height="30" width="80" align="left"><font size="1"><%=rs.getString("codigo")%></font></td>
     <td height="30" width="200" align="left"><%=rs.getString("nome")%></td>
-    <td width="40" align="center"></td>
+    <td width="160" height="30" align="left"><%=rs.getString("tipo")%></td>
     <td height="30" width="90" align="left"><%=valor%></td>
     
     <%if(rs01.next()){%>
@@ -245,7 +244,7 @@ rs01 = st01.executeQuery(produtoEstoque.pesquisaEstoque());
     //Verifica se o Estoque está abaixo do minimo e avisa que é necessário Alimentar o Estoque
     if(rs01.getInt("quantidade") < rs.getInt("estoqueMinimo")){
     %>
-    <td style="background-image:url(images/estoqueabaixo.png); color: #FFFFFF" style="background-repeat: no-repeat" width="70" align="center" title="Estoque está Abaixo do Mínimo (<%=rs.getString("estoqueMinimo")%>)"><strong><%=rs01.getString("quantidade")%></strong></td>
+    <td style="background-image:url(images/estoqueabaixo.png); color: #FFFFFF" width="70" align="center" title="Estoque está Abaixo do Mínimo (<%=rs.getString("estoqueMinimo")%>)"><strong><%=rs01.getString("quantidade")%></strong></td>
     <%}else {%>
     <td width="70" align="center"><%=rs01.getString("quantidade")%></td>
     <%} %> 
@@ -253,8 +252,13 @@ rs01 = st01.executeQuery(produtoEstoque.pesquisaEstoque());
     <td style="background-image:url(images/estoqueabaixo.png); color: #FFFFFF" width="70" align="center" title="Estoque está Abaixo do Mínimo (<%=rs.getString("estoqueMinimo")%>)"><strong>0.00</strong></td>
     <%} %>
     <td width="40" align="center"><%=rs.getString("unidade")%></td>
-    <td width="60" align="center"><a href="sis_insert_estoque.jsp"><img src="ico/ico_estoque.png" width="20" height="20" border="0" title="Alimentar Estoque de <%=rs.getString("nome")%>" /></a></td>
+    <%if(!rs.getString("utilizacao").equals("PM")){%>
+    	<td width="60" align="center"><a href="sis_insert_estoque.jsp?fornecedorID=<%=rs.getString("fornecedorID")%>&produtoID=<%=rs.getString("produtoID")%>"><img src="ico/ico_estoque.png" width="20" height="20" border="0" title="Alimentar Estoque de <%=rs.getString("nome")%>" /></a></td>
+    <%}else{ %>
+    	<td width="60" align="center"><a href="#"><img src="ico/ico_estoque.png" width="20" height="20" border="0" title="Não é permitdo Alimentar Estoque de <%=rs.getString("nome")%>. &#013;Favor alimentar os materiais que formam este produto!" /></a></td>
+    <%} %>	
     <td height="30" width="60" align="center"><a href="sis_update_produto.jsp?produtoID=<%=rs.getString("produtoID")%>"><img src="ico/ico_editar.png" width="20" height="20" border="0" title="Editar <%=rs.getString("nome")%>" /></a></td>
+    
     
     <%
 	//Verifica o status se está ativo ou não

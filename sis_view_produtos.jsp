@@ -36,11 +36,11 @@ if(request.getParameter("acao") != null){
 <%
 //Pesquisa Todos os Fornecedores ou busca por nome
 if(request.getParameter("nome") != null){
-	rs = st.executeQuery(produto.pesquisaProdutosNova(request.getParameter("nome")));
+	rs = st.executeQuery(produto.pesquisaProdutos(request.getParameter("nome")));
 }else if(request.getParameter("codigo") != null){
-	rs = st.executeQuery(produto.pesquisaProdutoPorCodigoNova(request.getParameter("codigo")));
+	rs = st.executeQuery(produto.pesquisaProdutoPorCodigo(request.getParameter("codigo")));
 }else{
-	rs = st.executeQuery(produto.listaProdutosNova());
+	rs = st.executeQuery(produto.listaProdutos());
 }
 
 %>
@@ -102,9 +102,9 @@ if(request.getParameter("msg") != null){
 <table width="985" align="center" height="440">
 <tr>
  <td height="25" bgcolor="#EEEEEE">
- <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_material.jsp'" value="+ Novo Material" />&nbsp;
- <!-- <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_tipo.jsp'" value="+ Novo Tipo de Produto" />&nbsp;-->
- <!-- <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_tipos.jsp'" value="Lista Tipos de Produto" />&nbsp;-->
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_produto.jsp'" value="+ Novo Produto" />&nbsp;
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_tipo.jsp'" value="+ Novo Tipo de Produto" />&nbsp;
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_tipos.jsp'" value="Lista Tipos de Produto" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_estoque.jsp'" value="Alimentar Estoque" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_produtos_separados.jsp'" value="Estoque por Loja" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_lista_compras.jsp'" value="Lista de Compras" />
@@ -115,7 +115,7 @@ if(request.getParameter("msg") != null){
  <br />
   <table width="940" align="center" cellpadding="0" cellspacing="0">
    <tr>
-    <td colspan="11" align="center"><strong>LISTA DE MATERIAIS ( ESTOQUE TOTAL )</strong></td>
+    <td colspan="11" align="center"><strong>LISTA DE PRODUTOS ( ESTOQUE TOTAL )</strong></td>
    </tr>
    <tr>
      <td colspan="11" height="15" align="center"></font></td>
@@ -167,8 +167,7 @@ if(request.getParameter("msg") != null){
    <tr bgcolor="#EEEEEE">
     <td width="80" align="left"><strong>Codigo</strong></td>
     <td width="200" align="left"><strong>Produto / Descri&ccedil;&atilde;o</strong></td>
-    <!-- <td width="160" align="left"><strong>Tipo</strong></td>-->
-    <td width="40" align="center"></td>
+    <td width="160" align="left"><strong>Tipo</strong></td>
     <td width="90" align="left"><strong>Preco</strong></td>
     <td width="70" align="center"><strong>Estoque</strong></td>
     <td width="40" align="center"></td>
@@ -201,26 +200,25 @@ Currency currency = Currency.getInstance("BRL");
 
 DecimalFormat formato = new DecimalFormat("R$ #,##0.00");
 
-valor = formato.format(rs.getDouble("precoCusto"));
+valor = formato.format(rs.getDouble("preco"));
 %>
 
    <tr>
     <td height="30" width="80" align="left"><font size="1"><%=rs.getString("codigo")%></font></td>
     <td height="30" width="200" align="left"><%=rs.getString("nome")%></td>
-    <td width="40" align="center"></td>
+    <td width="160" height="30" align="left"><%=rs.getString("tipo")%></td>
     <td height="30" width="90" align="left"><%=valor%></td>
-    
     
     <%
     //Verifica se o Estoque está abaixo do minimo e avisa que é necessário Alimentar o Estoque
-    if(rs.getInt("quantidade") < rs.getInt("estoqueMinimo")){
+    if(rs.getInt("estoque") < rs.getInt("estoqueMinimo")){
     %>
-    <td style="background-image:url(images/estoqueabaixo.png); color: #FFFFFF" width="70" align="center" title="Estoque está Abaixo do Mínimo (<%=rs.getString("estoqueMinimo")%>)"><strong><%=rs.getString("quantidade")%></strong></td>
+    <td style="background-image:url(images/estoqueabaixo.png); color: #FFFFFF" width="70" align="center" title="Estoque está Abaixo do Mínimo (<%=rs.getString("estoqueMinimo")%>)"><strong><%=rs.getString("estoque")%></strong></td>
     <%}else {%>
-    <td width="70" align="center"><%=rs.getString("quantidade")%></td>
+    <td width="70" align="center"><%=rs.getString("estoque")%></td>
     <%} %> 
     <td width="40" align="center"><%=rs.getString("unidade")%></td>
-    <td width="60" align="center"><a href="sis_insert_estoque.jsp"><img src="ico/ico_estoque.png" width="20" height="20" border="0" title="Alimentar Estoque de <%=rs.getString("nome")%>" /></a></td>
+    <td width="60" align="center"><a href="sis_insert_estoque.jsp?fornecedorID=<%=rs.getString("fornecedorID")%>&produtoID=<%=rs.getString("produtoID")%>"><img src="ico/ico_estoque.png" width="20" height="20" border="0" title="Alimentar Estoque de <%=rs.getString("nome")%>" /></a></td>
     <td height="30" width="60" align="center"><a href="sis_update_produto.jsp?produtoID=<%=rs.getString("produtoID")%>"><img src="ico/ico_editar.png" width="20" height="20" border="0" title="Editar <%=rs.getString("nome")%>" /></a></td>
     
     <%

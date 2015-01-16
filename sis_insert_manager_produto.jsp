@@ -18,16 +18,54 @@ ResultSet rs01 = null;
 <%
 //Recupera valores trazidos do Formulário de Cadastro de Produto
 //Atrubui eles ao objeto produto
+if(request.getParameter("material") != null)//Verifica se o produto é material
+{
+	produto.tipo.tipoProdutoID 			= Integer.parseInt(request.getParameter("tipoprodutoID"));
+	produto.fornecedor.fornecedorID 	= Integer.parseInt(request.getParameter("fornecedorID"));
+	produto.nome 						= request.getParameter("nome");
+	produto.codigo 						= request.getParameter("codigo");
+	produto.unidade 					= request.getParameter("unidade");
+	produto.precoCusto 					= Float.parseFloat(request.getParameter("precoCusto"));
+	produto.preco 						= 0.00;//Float.parseFloat(request.getParameter("precoVenda"));
+	produto.lucro 						= "0.00";//request.getParameter("lucro");
+	produto.estoqueMinimo 				= Integer.parseInt(request.getParameter("estoqueMinimo"));
+	produto.utilizacao = "M";
+}
+else if(request.getParameter("possuiMaterial") != null){
+	produto.tipo.tipoProdutoID 			= Integer.parseInt(request.getParameter("tipoprodutoID"));
+	produto.fornecedor.fornecedorID 	= Integer.parseInt(request.getParameter("fornecedorID"));
+	produto.nome 						= request.getParameter("nome");
+	produto.codigo 						= request.getParameter("codigo");
+	produto.unidade 					= request.getParameter("unidade");
+	produto.precoCusto 					= Float.parseFloat(request.getParameter("precoCusto"));
+	produto.preco 						= Float.parseFloat(request.getParameter("precoVenda"));
+	produto.lucro 						= request.getParameter("lucro");
+	produto.estoqueMinimo 				= Integer.parseInt(request.getParameter("estoqueMinimo"));
+	//Recuperar lista de id de materiais e lista de id
+	produto.utilizacao = "PM";
+	String [] ids = request.getParameterValues("materiaisSel[]");
+	String [] Qtds =request.getParameterValues("qtdUtilizar[]");
+	String ids_ = "";
+	String Qtds_ = "";
+	for(int i = 0; i < ids.length; i++){
+		ids_ +=  ids[i] + "#";
+		Qtds_ += Qtds[i] + "#";
+	}
+	produto.listaIDMaterias = ids_.substring(0, ids_.length() - 1);
+	produto.ListaQtdMatariais = Qtds_.substring(0, Qtds_.length() - 1);
 
-produto.tipo.tipoProdutoID 			= Integer.parseInt(request.getParameter("tipoprodutoID"));
-produto.fornecedor.fornecedorID 	= Integer.parseInt(request.getParameter("fornecedorID"));
-produto.nome 						= request.getParameter("nome");
-produto.codigo 						= request.getParameter("codigo");
-produto.unidade 					= request.getParameter("unidade");
-produto.precoCusto 					= Float.parseFloat(request.getParameter("precoCusto"));
-produto.preco 						= Float.parseFloat(request.getParameter("precoVenda"));
-produto.lucro 						= request.getParameter("lucro");
-produto.estoqueMinimo 				= Integer.parseInt(request.getParameter("estoqueMinimo"));
+}
+else{
+	produto.tipo.tipoProdutoID 			= Integer.parseInt(request.getParameter("tipoprodutoID"));
+	produto.fornecedor.fornecedorID 	= Integer.parseInt(request.getParameter("fornecedorID"));
+	produto.nome 						= request.getParameter("nome");
+	produto.codigo 						= request.getParameter("codigo");
+	produto.unidade 					= request.getParameter("unidade");
+	produto.precoCusto 					= Float.parseFloat(request.getParameter("precoCusto"));
+	produto.preco 						= Float.parseFloat(request.getParameter("precoVenda"));
+	produto.lucro 						= request.getParameter("lucro");
+	produto.estoqueMinimo 				= Integer.parseInt(request.getParameter("estoqueMinimo"));
+}
 
 %>
 
@@ -45,9 +83,19 @@ if(rs.next()){
 		//Caso exista um Produto com esse Codigo, retorna para a Página de Cadasto
 		response.sendRedirect("sis_insert_produto.jsp?msg=7");
 	}else{
-		//Senão: Executa a Função que irá salvar os dados na Base de Dados
-		st02.execute(produto.salvaProduto());
-		response.sendRedirect("sis_view_produtos_separados.jsp?msg=1");
+		if(request.getParameter("material") != null){
+			st02.execute(produto.salvaProdutoMatereial());
+			response.sendRedirect("sis_view_produtos_separados.jsp?msg=1");
+		}
+		else if(request.getParameter("possuiMaterial") != null){
+			st02.execute(produto.salvaProdutoPossuiMaterial());
+			response.sendRedirect("sis_view_produtos_separados.jsp?msg=1");
+		}
+		else{
+			//Senão: Executa a Função que irá salvar os dados na Base de Dados
+			st02.execute(produto.salvaProduto());
+			response.sendRedirect("sis_view_produtos_separados.jsp?msg=1");
+		}
 	}
 }
 %>
