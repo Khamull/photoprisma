@@ -460,6 +460,7 @@ function getMoney(valor){
      <option value="ML">ML</option>
      <option value="CX">CX</option>
      <option value="MT">MT</option>
+     <option value="CM">CM</option>
     </select>
     </td>
   </tr>
@@ -473,10 +474,25 @@ function getMoney(valor){
       <strong>%</strong></td>
   </tr>
   <tr>
+  	<td align="left"><!-- Pre&ccedil;o de Custo--></td>
+    <td align="left"><!-- <input name="precoCusto" type="text" value="<%=rs02.getString("precoCusto") %>" id="precoCusto" size="20" maxlength="10" onkeypress="venda(); verPonto(); return numeroVirgula(this);"  onblur="verPonto(); venda()"/>--></td>
+    <td align="left">Pre&ccedil;o Venda </td>
+    <td align="left"><input name="precoVenda" type="text" value="<%=rs02.getString("preco") %>" id="precoVenda" size="20" maxlength="10" onkeypress="verMargem(); verPonto(); return numeroVirgula(this);" onblur="verPonto(); verMargem()" /></td>
+    <td align="center" bgcolor="#00CC33"><strong>Lucro</strong></td>
+    <td align="left"><input name="lucro" id="lucro" style="border:2px dashed #00CC33; padding-left:4px; height:18px;" onblur="verPorcentagem()" onkeypress="verPorcentagem(); verPonto();" type="text" size="5" maxlength="3" value="<%=rs02.getString("lucro") %>" />
+      <strong>%</strong></td>
+  </tr>
+  <tr>
     <td align="left">Estoque M&iacute;nimo</td>
     <td align="left"><input type="text" name="estoqueMinimo" size="20" maxlength="5" value="<%=rs02.getString("estoqueMinimo") %>" onKeyPress="return numero(this)"/> <input type="hidden" name="estoque" value="<%=rs02.getString("estoque") %>" /></td>
-    <td align="left"></td>
-    <td colspan="3" align="left"></td>
+    <td>Selecione Rotina</td>
+    <td><select name="rotina" id="rotina">
+    		<option value="-1">Não se aplica...</option>
+    		<option value="0">Revelação 24 horas</option><!-- Verififcar na hora que é feita a seleção, qual o tamanho de revelação que foi selecionado -->
+    		<option value="1">Foto Produto</option>
+    	</select>
+    </td>
+    <td colspan="2" align="left"></td>
   </tr>
   <tr>
     <td align="left"><input type="hidden" name="produtoID" value="<%=rs02.getString("produtoID") %>" /></td>

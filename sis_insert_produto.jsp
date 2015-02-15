@@ -142,6 +142,18 @@ v = parseFloat(v);
 document.form1.lucro.value = v.toFixed(2);
 }
 
+function verMargemServico(){
+	var c = document.form1.precoCusto.value;
+	var i = document.form1.precoVendaServico.value;
+
+	c = c.replace(",",".");
+	i = i.replace(",",".");
+
+	var v = parseFloat(i*100)/parseFloat(c) - 100;
+	v = parseFloat(v);
+	document.form1.lucroServico.value = v.toFixed(2);
+	}
+
 
 function verPorcentagem(){
 	var a = document.form1.precoCusto.value;
@@ -157,6 +169,19 @@ function verPorcentagem(){
 	document.form1.precoVenda.value = y.toFixed(2);
 }
 
+function verPorcentagemServico(){
+	var a = document.form1.precoCusto.value;
+	var x = document.form1.lucroServico.value;
+	
+	a = a.replace(",",".");
+	x = x.replace(",",".");
+	
+	var b = parseFloat(a/100)*parseFloat(x);
+	
+	var y = parseFloat(a)+parseFloat(b);
+	
+	document.form1.precoVendaServico.value = y.toFixed(2);
+}
 function verPonto()
 {
 var precoCusto = document.form1.precoCusto.value;
@@ -183,6 +208,7 @@ function venda(){
 	
 	//Atribui o valor ao outro Campo
 	document.form1.precoVenda.value = p2;
+	document.form1.precoVendaServico.value = p2;
 	
 }
 function validaMaterial()//Caso o produto que esta sendo cadastrado seja um material/insumo de alguma coisa, ele não possuirá preço de venda, somente de custo e valor de estoque mínimo
@@ -253,7 +279,7 @@ function addRow(tableID){//Adiciona linhas a tabela baseada na primeira linha ex
 			if(i == 1)
 				newcell.innerHTML="<select name=\"materiaisSel[]\"id=\"msel\"  style=\"max-width: 150px\" onchange=\"recuperaCusto(this, "+contador+")\"><option value=\"-1\">...</option><%=select_javascript%>";
 			if(i == 2)
-				newcell.innerHTML="<strong><input type=\"number\" name=\"qtdUtilizar[]\" min=\"1\" value=\"1\" step=\"0.01\" style=\"text-align: right; max-width: 50px;\" onchange=\"multiplica(this,"+contador+")\" /></strong>";
+				newcell.innerHTML="<strong><input type=\"number\" name=\"qtdUtilizar[]\" min=\"0.01\" value=\"1\" step=\"0.01\" style=\"text-align: right; max-width: 50px;\" onchange=\"multiplica(this,"+contador+")\" /></strong>";
 		}
 		
 	}
@@ -379,7 +405,7 @@ function getMoney(valor){
  <td valign="top" align="center">
  
  <form name="form1" method="post" action="sis_insert_manager_produto.jsp" onsubmit="return verForm(this)">
- <table width="850" align="center">
+ <table width="950" align="center">
  <%if(request.getParameter("msg") != null){ %>
   <tr>
    <td colspan="6" align="center" bgcolor="#ff0000"><font color="#ffffff"><strong><%=msg %></strong></font></td>
@@ -429,7 +455,7 @@ function getMoney(valor){
      <option value="ML">ML</option>
      <option value="CX">CX</option>
      <option value="MT">MT</option>
-     <option value="MT">CM</option>
+     <option value="CM">CM</option>
     </select>
     </td>
   </tr>
@@ -443,10 +469,26 @@ function getMoney(valor){
       <strong>%</strong></td>
   </tr>
   <tr>
+    <td align="left"></td>
+    <td align="left"></td>
+    <td align="left">Pre&ccedil;o Venda Servi&ccedil;o</td>
+    <td align="left"><input name="precoVendaServico" id="precoVendaServico" type="text" value="0.00" size="20" maxlength="10" onkeypress="verMargemServico(); verPonto(); return numeroVirgula(this);" onblur="verPonto(); verMargem()" /></td>
+    <td align="center" bgcolor="#00CC33"><strong>Lucro Servi&ccedil;o</strong></td>
+    <td align="left"><input name="lucroServico" id="lucroServico" type="text" style="border:2px dashed #00CC33; padding-left:4px; height:18px;" onblur="verPorcentagemServico()" onkeypress="verPorcentagem(); verPonto();" value="0.0" size="5" maxlength="3" />
+      <strong>%</strong></td>
+  </tr>
+  <tr>
     <td align="left">Estoque M&iacute;nimo</td>
     <td align="left"><input type="text" name="estoqueMinimo" size="20" maxlength="5" onKeyPress="return numero(this)"/></td>
-    <td></td>
-    <td colspan="3" align="left"></td>
+    <td>Selecione Rotina</td>
+    <td>
+    	<select name="rotina" id="rotina">
+    		<option value="-1">Não se aplica...</option>
+    		<option value="0">Revelação 24 horas</option><!-- Verififcar na hora que é feita a seleção, qual o tamanho de revelação que foi selecionado -->
+    		<option value="1">Foto Produto</option>
+    	</select>
+    </td>
+    <td colspan="2" align="left"></td>
   </tr>
   <tr>
     <td align="left">&nbsp;</td>
@@ -485,7 +527,7 @@ function getMoney(valor){
   						<%=select %>
   					</td>
   					<td>
-  						<strong><input type="number" name="qtdUtilizar[]" min="1" value="1" step="0.01" style="text-align: right; max-width: 50px;" onchange="multiplica(this,0)"/></strong>
+  						<strong><input type="number" name="qtdUtilizar[]" min="0.01" value="1" step="0.01" style="text-align: right; max-width: 50px;" onchange="multiplica(this,0)"/></strong>
   						
   					</td>
   					<td>
