@@ -483,7 +483,7 @@ function getMoney(valor){
     <td>Selecione Rotina</td>
     <td>
     	<select name="rotina" id="rotina">
-    		<option value="-1">Não se aplica...</option>
+    		<option value="-1" selected="selected">Não se aplica...</option>
     		<option value="0">Revelação 24 horas</option><!-- Verififcar na hora que é feita a seleção, qual o tamanho de revelação que foi selecionado -->
     		<option value="1">Foto Produto</option>
     	</select>

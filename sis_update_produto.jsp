@@ -476,10 +476,10 @@ function getMoney(valor){
   <tr>
   	<td align="left"><!-- Pre&ccedil;o de Custo--></td>
     <td align="left"><!-- <input name="precoCusto" type="text" value="<%=rs02.getString("precoCusto") %>" id="precoCusto" size="20" maxlength="10" onkeypress="venda(); verPonto(); return numeroVirgula(this);"  onblur="verPonto(); venda()"/>--></td>
-    <td align="left">Pre&ccedil;o Venda </td>
-    <td align="left"><input name="precoVenda" type="text" value="<%=rs02.getString("preco") %>" id="precoVenda" size="20" maxlength="10" onkeypress="verMargem(); verPonto(); return numeroVirgula(this);" onblur="verPonto(); verMargem()" /></td>
-    <td align="center" bgcolor="#00CC33"><strong>Lucro</strong></td>
-    <td align="left"><input name="lucro" id="lucro" style="border:2px dashed #00CC33; padding-left:4px; height:18px;" onblur="verPorcentagem()" onkeypress="verPorcentagem(); verPonto();" type="text" size="5" maxlength="3" value="<%=rs02.getString("lucro") %>" />
+    <td align="left">Pre&ccedil;o Venda Servi&ccedil;o</td>
+    <td align="left"><input name="precoVendaServico" type="text" value="<%=rs02.getString("precoServico") %>" id="precoVenda" size="20" maxlength="10" onkeypress="verMargem(); verPonto(); return numeroVirgula(this);" onblur="verPonto(); verMargem()" /></td>
+    <td align="center" bgcolor="#00CC33"><strong>Lucro Servi&ccedil;o</strong></td>
+    <td align="left"><input name="lucroServico" id="lucroServico" style="border:2px dashed #00CC33; padding-left:4px; height:18px;" onblur="verPorcentagem()" onkeypress="verPorcentagem(); verPonto();" type="text" size="5" maxlength="3" value="<%=rs02.getString("lucroServico") %>" />
       <strong>%</strong></td>
   </tr>
   <tr>

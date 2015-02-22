@@ -27,9 +27,12 @@ if(request.getParameter("material") != null)//Verifica se o produto é material
 	produto.unidade 					= request.getParameter("unidade");
 	produto.precoCusto 					= Float.parseFloat(request.getParameter("precoCusto"));
 	produto.preco 						= 0.00;//Float.parseFloat(request.getParameter("precoVenda"));
+	produto.precoServico				= 0.00;//Float.parseFloat(request.getParameter("precoVenda"));
 	produto.lucro 						= "0.00";//request.getParameter("lucro");
+	produto.lucroServico				= "0.00";//request.getParameter("lucro");
 	produto.estoqueMinimo 				= Integer.parseInt(request.getParameter("estoqueMinimo"));
-	produto.utilizacao = "M";
+	produto.utilizacao 					= "M";
+	produto.Rotina						= Integer.parseInt(request.getParameter("rotina"));
 }
 else if(request.getParameter("possuiMaterial") != null){
 	produto.tipo.tipoProdutoID 			= Integer.parseInt(request.getParameter("tipoprodutoID"));
@@ -39,8 +42,11 @@ else if(request.getParameter("possuiMaterial") != null){
 	produto.unidade 					= request.getParameter("unidade");
 	produto.precoCusto 					= Float.parseFloat(request.getParameter("precoCusto"));
 	produto.preco 						= Float.parseFloat(request.getParameter("precoVenda"));
+	produto.precoServico				= Float.parseFloat(request.getParameter("precoVendaServico"));
 	produto.lucro 						= request.getParameter("lucro");
+	produto.lucroServico				= request.getParameter("lucroServico");
 	produto.estoqueMinimo 				= Integer.parseInt(request.getParameter("estoqueMinimo"));
+	produto.Rotina						= Integer.parseInt(request.getParameter("rotina"));
 	//Recuperar lista de id de materiais e lista de id
 	produto.utilizacao = "PM";
 	String [] ids = request.getParameterValues("materiaisSel[]");
@@ -64,7 +70,10 @@ else{
 	produto.precoCusto 					= Float.parseFloat(request.getParameter("precoCusto"));
 	produto.preco 						= Float.parseFloat(request.getParameter("precoVenda"));
 	produto.lucro 						= request.getParameter("lucro");
+	produto.lucroServico				= request.getParameter("lucroServico");
 	produto.estoqueMinimo 				= Integer.parseInt(request.getParameter("estoqueMinimo"));
+	produto.Rotina						= Integer.parseInt(request.getParameter("rotina"));
+	produto.precoServico				= Float.parseFloat(request.getParameter("precoVendaServico"));
 }
 
 %>

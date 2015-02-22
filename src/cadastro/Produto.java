@@ -10,13 +10,15 @@ public class Produto {
 	public String unidade;
 	public double precoCusto;
 	public double preco;
+	public double precoServico;
 	public int estoqueMinimo;
 	public float estoque;
 	public String lucro;
+	public String lucroServico;
 	public String listaIDMaterias;
 	public String ListaQtdMatariais;
 	public String utilizacao;
-	
+	public int Rotina;
 	//Lista todos os Produtos
 	public String listaProdutos() {
 		String pesquisaProduto = "SELECT fornecedor.fornecedorID, fornecedor.fornNomeFantasia, tipoproduto.tipoprodutoID, tipoproduto.tipo, produto.* ";
@@ -105,6 +107,18 @@ public class Produto {
 		
 		return pesquisaProduto;
 	}
+	
+	public String listaProdutosAtivosDiferentedeMaterial() {
+		String pesquisaProduto = "SELECT fornecedor.fornecedorID, fornecedor.fornNomeFantasia, tipoproduto.tipoprodutoID, tipoproduto.tipo, produto.* ";
+		pesquisaProduto += "FROM produto INNER JOIN fornecedor ON fornecedor.fornecedorID = produto.fornecedorID ";
+		pesquisaProduto += "INNER JOIN tipoproduto ON tipoproduto.tipoprodutoID = produto.tipoprodutoID ";
+		pesquisaProduto += "WHERE produtoAtivo = 'S' ";
+		pesquisaProduto += "and utilizacao <> 'M' ";
+		pesquisaProduto += "ORDER BY produto.nome ASC";
+		
+		return pesquisaProduto;
+	}
+	
 	
 	public String listaProdutosAtivos_Selecao() {
 		String pesquisaProduto = "SELECT * FROM produto WHERE produtoAtivo = 'S'";
@@ -251,24 +265,24 @@ public class Produto {
 	
 	public String salvaProdutoMatereial() {
 		String salvaProd = "INSERT INTO produto ";
-		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, nome, codigo, unidade, precoCusto, preco,estoqueminimo, estoque, lucro) VALUES";
-		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"','"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"','"+preco+"', '"+estoqueMinimo+"', '"+estoque+"','"+lucro+"') ";
+		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, nome, codigo, unidade, precoCusto, preco, precoServico, estoqueminimo, estoque, lucro, lucroServico, rotina) VALUES";
+		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"','"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"','"+preco+"', '"+precoServico+"','"+estoqueMinimo+"', '"+estoque+"','"+lucro+"', '"+lucroServico+"', '"+Rotina+"') ";
 		
 		return salvaProd;
 	}
 	
 	public String salvaProdutoPossuiMaterial() {
 		String salvaProd = "INSERT INTO produto ";
-		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, qtdUtilizar, idsMateriais, nome, codigo, unidade, precoCusto, preco, estoqueminimo, estoque, lucro) VALUES";
-		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"', '"+ListaQtdMatariais+"', '"+listaIDMaterias+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"' ) ";
+		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, qtdUtilizar, idsMateriais, nome, codigo, unidade, precoCusto, preco, precoServico, estoqueminimo, estoque, lucro, lucroServico, rotina) VALUES";
+		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"', '"+ListaQtdMatariais+"', '"+listaIDMaterias+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+precoServico+"', '"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"', '"+lucroServico+"','"+Rotina+"' ) ";
 		
 		return salvaProd;
 	}
 	
 	public String salvaMateriaisServico() {
 		String salvaProd = "INSERT INTO servicomateriais ";
-		salvaProd += "(tipoprodutoID, fornecedorID, nome, codigo, unidade, precoCusto, preco, estoqueminimo, estoque, lucro) VALUES";
-		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"' ) ";
+		salvaProd += "(tipoprodutoID, fornecedorID, nome, codigo, unidade, precoCusto, preco, precoServico, estoqueminimo, estoque, lucro, lucroServico, rotina) VALUES";
+		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+precoServico+"','"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"','"+lucroServico+"', '"+Rotina+"' ) ";
 		
 		return salvaProd;
 	}

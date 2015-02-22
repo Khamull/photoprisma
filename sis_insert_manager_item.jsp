@@ -17,6 +17,8 @@ item.produto.nome 		= request.getParameter("descricao");
 item.produto.preco 		= Float.parseFloat(request.getParameter("valorUnitario"));
 item.quantidade 		= Float.parseFloat(request.getParameter("quantidade"));
 item.total 				= Float.parseFloat(request.getParameter("totalItem"));
+
+
 %>
 
 

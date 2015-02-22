@@ -30,7 +30,7 @@ ResultSet rs04 = null;
 
 <%
 //Pesquisa produtos
-rs = st.executeQuery(produto.listaProdutosAtivos());
+rs = st.executeQuery(produto.listaProdutosAtivosDiferentedeMaterial());
 
 //Pesquisa itens relacionados ao ID dessa Venda
 //Atribui o ID da venda Objeto
@@ -66,6 +66,7 @@ int minimo = 0;
 String descricao = "";
 String precoUnitario = "0.00";
 String totalItem = "0.00";
+String Utilizacao = "";
 
 //Atribui valores da tabela produto às variaveis
 
@@ -76,7 +77,6 @@ if(request.getParameter("codigo") != null){
 		
 		//Realiza a pesquisa da quantidade de itens no estoque referente a esse produto na unidade em que está logado
 		rs04 = st04.executeQuery(produtoEstoque.pesquisaEstoque());
-		
 		if(rs04.next()){
 			estoqueParcial = Float.parseFloat(rs04.getString("quantidade"));
 		}
@@ -87,6 +87,7 @@ if(request.getParameter("codigo") != null){
 		descricao = rs02.getString("codigo")+" - "+rs02.getString("tipo")+" "+rs02.getString("nome");
 		precoUnitario = rs02.getString("preco");
 		totalItem = rs02.getString("preco");
+		Utilizacao = rs02.getString("utilizacao");
 	}
 }
 
@@ -151,13 +152,13 @@ function verForm(){
 		return false;
 	}
 	
-	if(document.form1.qtddEstoque.value <= 0){
+	if(document.form1.qtddEstoque.value <= 0 && document.form1.utilizacao.value == "P"){
 		alert("Este produto está indisponivel em Estoque!");
 		document.form1.codigo.focus();
 		return false;
 	}
 	
-	if(parseFloat(document.form1.estoqueParcial.value) < parseFloat(document.form1.quantidade.value)){
+	if(parseFloat(document.form1.estoqueParcial.value) < parseFloat(document.form1.quantidade.value) && document.form1.utilizacao.value == "P"){
 		alert("Quantidade indisponivel em Estoque!\nDISPONIVEL: "+document.form1.estoqueParcial.value);
 		document.form1.quantidade.focus();
 		return false;
@@ -401,18 +402,19 @@ if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=
         </td>
         <td width="235">
         <input type="hidden" name="qtddEstoque" value="<%=estoque%>" />
-        <input type="hidden" name="estoqueParcial" value="<%=estoqueParcial%>" />        
+        <input type="hidden" name="estoqueParcial" value="<%=estoqueParcial%>" />
+        <input type="hidden" name="utilizacao" value="<%=Utilizacao%>" />                
         </td>
         <td width="130"></td>
        </tr>
        <tr>
         <td align="left" colspan="3" height="40" background="images/label495.png"><input name="descricao" type="text" class="descricaoProdutoPDV"  value="<%=descricao%>"/></td>
        </tr>
-       <%if (estoque <= 0){%>
+       <%if (estoque <= 0 && !Utilizacao.equals("PM") && !Utilizacao.equals("M")){%>
        <tr>
         <td align="center" colspan="3" background="images/estoquezero.png"><font color="#FFFFFF"><strong>PRODUTO INDISPON&Iacute;VEL EM ESTOQUE</strong></font></td>
        </tr>
-       <%}else if(estoque < minimo){%>
+       <%}else if(estoque < minimo && !Utilizacao.equals("PM") && !Utilizacao.equals("M")){%>
        <tr>
         <td align="center" colspan="3" background="images/estoqueacabando.png"><font color="#FF0000"><strong>ESSE PRODUTO EST&Aacute; COM O ESTOQUE ABAIXO DO M&Iacute;NIMO</strong></font></td>
        </tr>
