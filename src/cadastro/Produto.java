@@ -132,6 +132,12 @@ public class Produto {
 		return pesquisaProduto;
 	}
 	
+	public String listaMateriaisPorId(String Lista) {
+		String pesquisaProduto = "SELECT * FROM produto WHERE produto.produtoID in ("+Lista+") ORDER BY produto.nome ASC";
+		
+		return pesquisaProduto;
+	}
+	
 	//Lista todos os Produtos
 	public String listaProdutosPorID() {
 		String pesquisaProduto = "SELECT fornecedor.fornecedorID, fornecedor.fornNomeFantasia, tipoproduto.tipoprodutoID, tipoproduto.tipo, produto.* ";
