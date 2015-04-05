@@ -15,9 +15,9 @@ if(request.getParameter("materialID") != null ||request.getParameter("materialID
 	rs01 = st01.executeQuery(material.listaPrecosporID());
 	if(rs01.next())
 	{
-		String precoVenda = rs01.getString("precoCusto");
+		String precoVenda = rs01.getString("precoServico");
 		String unidade = rs01.getString("unidade");
-		out.println(precoVenda+","+unidade);
+		out.println(precoVenda);
 	}
 }
 

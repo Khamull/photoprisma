@@ -104,7 +104,7 @@ else{
 	{
 		rs04 = st04.executeQuery(produto.listaMateriaisPorId(Lista));
 		while(rs04.next()){
-			estoque.produto.estoque = (Float.parseFloat(QtdUtilizar[j]) - rs04.getFloat("estoque"));
+			estoque.produto.estoque = (rs04.getFloat("estoque") - Float.parseFloat(QtdUtilizar[j]));
 			estoque.produto.produtoID = Integer.parseInt(MateriaisID[j]);
 			st.execute(estoque.alteraEstoque());
 
@@ -116,13 +116,23 @@ else{
 			float estoqueParcial = 0;
 			rs05 = st05.executeQuery(produtoEstoque.pesquisaEstoque());
 			if(rs05.next()){
-				estoqueParcial = Float.parseFloat(rs04.getString("quantidade"));
+				estoqueParcial = Float.parseFloat(rs05.getString("quantidade"));
 			}
-			produtoEstoque.quantidade = (estoqueParcial - Float.parseFloat(QtdUtilizar[j]));
+			produtoEstoque.quantidade = (Float.parseFloat(QtdUtilizar[j]) - estoqueParcial);
 			st.execute(produtoEstoque.alteraEstoque());
 			j++;
 		}
-		
+		st.execute(item.salvaItem());
+	}
+	else
+	{
+		%>
+		<script type="text/javascript">
+			alert("Um ou mais materiais do produto não estão disponíveis, favor rever estoque!");
+		</script>	
+		<%
+		response.sendRedirect("sis_gerar_venda.jsp?msg=1");
+		return;
 	}
 }
 	

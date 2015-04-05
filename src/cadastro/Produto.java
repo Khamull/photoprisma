@@ -90,7 +90,7 @@ public class Produto {
 	public String listaPrecosporID() {
 		//SELECT distinct(produto.nome), estoque.produtoID, produto.codigo, produto.estoque, produto.estoqueMinimo, ROUND(AVG(estoque.precoCusto),2) as precoCusto, estoque.unidade FROM estoque inner join produto on estoque.produtoID = produto.produtoID
 		//group by produto.nome
-		String pesquisaProduto = " SELECT precoCusto, unidade";
+		String pesquisaProduto = " SELECT precoServico, unidade";
 		pesquisaProduto += " FROM produto ";
 		pesquisaProduto += " WHERE produto.produtoID = '"+produtoID+"'";
 		

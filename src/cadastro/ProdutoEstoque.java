@@ -10,7 +10,8 @@ public class ProdutoEstoque {
 	
 	//Pesquisa se já tem estoque cadastrado para esse produto
 	public String pesquisaEstoque() {
-		return "SELECT * FROM produtoestoque WHERE produtoID = '"+produto.produtoID+"' AND empresaID = '"+empresa.empresaID+"'";
+		String Lista = "SELECT * FROM produtoestoque WHERE produtoID = '"+produto.produtoID+"' AND empresaID = '"+empresa.empresaID+"'";
+		return Lista;
 	}
 	
 	

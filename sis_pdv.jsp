@@ -12,6 +12,8 @@
 <jsp:useBean id="produtoEstoque" class="cadastro.ProdutoEstoque" scope="page"></jsp:useBean>
 
 <%
+
+
 //Instacia objeto do tipo Statment para usar na query
 Statement st01 = con.createStatement();
 Statement st02 = con.createStatement();

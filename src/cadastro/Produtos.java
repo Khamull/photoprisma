@@ -53,8 +53,8 @@ public class Produtos {
 	//pesquisa todos os produtos
 	public String pesquisaProdutosTodos() {
 		
-		String pesquisaProduto = " SELECT produtos.*";
-		pesquisaProduto += " FROM produtos";
+		String pesquisaProduto = " SELECT produto.*";
+		pesquisaProduto += " FROM produto";
 	
 		return pesquisaProduto;
 	}
