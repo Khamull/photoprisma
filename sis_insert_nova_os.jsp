@@ -613,28 +613,7 @@ function pesquisaCliente(){
 
 //Valida se o Campo √© Num√©rico (COM V√çRGULA " , " )
 function numero()	{
-if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=44){return false;} 
-}
-
-function ExibeCaminho(obj)	{//Exibe campo para inserÁ„o de caminho da arte
-	
-	$.post('sis_retorna_rotina.jsp', {prodID: obj.selectedOptions[0].value}, function(data){
-		
-		if (data == 0 || data == 1)
-		{
-			document.getElementById("caminho1").style.visibility="visible";
-			document.getElementById("caminho2").style.visibility="visible";
-			document.getElementById("caminho2").setAttribute("required","required");
-		}
-		else
-		{
-			document.getElementById("caminho1").style.visibility="hidden";
-			document.getElementById("caminho2").style.visibility="hidden";
-			document.getElementById("caminho2").setAttribute("required","");
-		}
-	});
-	
-	 
+	if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=44){return false;} 
 }
 
 //Verifca se tem "," ao inv√©s de "." e Substitui
@@ -794,7 +773,7 @@ function verPonto_Calculo(val){
 					<td  id="caminho1">
 						InformaÁıes Adicionais: 
 					</td>
-					<td id="caminho2">
+					<td id="caminho2" width="150px">
 						<input type="text" name="infos[]" value="" />
 					</td>
 				</tr>
@@ -818,7 +797,7 @@ function verPonto_Calculo(val){
 	   <td align="center" colspan="4"><textarea name="descricao" required></textarea></td>
 	  </tr>
 	  <tr>
-	  <input name="valor" type="hidden" value="0.00" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)"/>
+	     <input name="valor" type="hidden" value="0.00" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)"/>
 	     <td align="left" colspan="2"><input type="submit" name="CADASTRAR" value="Cadastrar" class="botao" />
 	     </td>
      </tr>
@@ -843,6 +822,7 @@ else
 </tr>
 
 </table>
+
 </div>
 <div id="rodape2"><jsp:include page="inc/rodape.jsp" /></div>
 </div>

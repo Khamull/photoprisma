@@ -55,8 +55,12 @@ if(rs.next()){
 	Currency currency = Currency.getInstance("BRL");
 	
 	DecimalFormat formato1 = new DecimalFormat("R$ #,##0.00");
-	
-	subTotal = formato1.format(rs.getDouble("valor"));
+	if(!rs.getString("entrada").equals("0")){
+		subTotal = formato1.format(rs.getDouble("valor") - rs.getDouble("entrada"));
+	}
+	else{
+		subTotal = formato1.format(rs.getDouble("valor"));
+	}
 	
 	//Adiciona o ID ao objeto cliente
 	cliente.clienteID = rs.getInt("clienteID");
@@ -410,13 +414,17 @@ function ValidaVendaVale(){
          </tr>
          <tr>
           <td></td>
-          <td align="left" class="tituloPDV">&nbsp;Desconto</td>
+          <td align="left" class="tituloPDV">Desc/Entr</td>
           <td width="234" align="left" class="tituloPDV">&nbsp;<input type="text" id="entrada" style="font:Verdana, Geneva, sans-serif; font-size:14px; font-weight:bold; border:0px; background-color:#EEEEEE;" value="Valor Recebido" readonly="readonly" /></td>
           <td width="131" align="left" class="tituloPDV">&nbsp;Troco</td>
          </tr>
          <tr>
           <td height="40"></td>
+          <%if(rs.getString("entrada").equals("0")){ %>
           <td align="left" valign="middle" background="images/label130.png"><input name="desconto" type="text" class="labelPDV" onblur="descontar(); calculaTrocoB()" onKeyPress="return numero(this)" value="0,00" /></td>
+          <%}else{ %>
+          	<td align="left" valign="middle" background="images/label130.png"><input name="desconto" type="text" class="labelPDV" onblur="descontar(); calculaTrocoB()" onKeyPress="return numero(this)" value="<%=rs.getString("entrada") %>" autofocus/></td>
+          <%} %>
           <td width="234" align="left" valign="middle" background="images/label235.png" style="background-repeat:no-repeat"><input class="labelPDV" type="text" name="pago" onKeyPress="return numero(this)" onblur="calculaTroco()"/></td>
           <td width="131" align="left" valign="middle" background="images/label235.png"><input name="troco" type="text" class="labelPDV" readonly="readonly" /></td>
          </tr>
@@ -432,7 +440,7 @@ function ValidaVendaVale(){
           <td></td>
           <td>
            <input type="hidden" name="totalDaVenda" value="<%=rs.getString("valor")%>" />
-           <input type="hidden" name="valorVariavel" value="<%=rs.getString("valor")%>" />
+           <input type="hidden" name="valorVariavel" value="<%=subTotal%>" />
            <input type="hidden" name="servicoID" value="<%=request.getParameter("servicoID")%>" />
           </td>
           <td colspan="2" height="50" align="left" class="totalPDV"><input name="totalVenda" type="text" class="totalPDV" value="<%=subTotal %>" readonly="readonly" /></td>

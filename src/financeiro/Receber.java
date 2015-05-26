@@ -52,7 +52,7 @@ public class Receber {
 	//Insere um valor de Entrada com Status (PAGO) na tabela receber (de um Serviço)
 	public String cadastraEntradaServico(float entrada) {
 		String salvaReceber = "INSERT INTO receber (vendaID, formID, clienteID, valor, vencimento, parcela, de, status, servico, empresaID) ";
-		salvaReceber += "VALUES ('"+servico.servicoID+"', '"+forma.formPagID+"', '"+cliente.clienteID+"', '"+entrada+"', '"+vencimento+"', ";
+		salvaReceber += "VALUES ('"+servico.servicoID+"', '"+forma.formPagID+"', '"+cliente.clienteID+"', '"+ entrada +"', '"+vencimento+"', ";
 		salvaReceber += "'1', '1', 'P', 'S', '"+empresa.empresaID+"')";
 		
 		return salvaReceber;

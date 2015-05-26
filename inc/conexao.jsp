@@ -4,7 +4,7 @@ Statement st = null;
 
 //CONEXAO PARA HOSPEDAGEM
 //Class.forName("org.gjt.mm.mysql.Driver");
-//con = DriverManager.getConnection("jdbc:mysql://mysql.fortesystem.net.br/fortesystem16", "fortesystem16", "100amix");
+//con = DriverManager.getConnection("jdbc:mysql://mysql.fortesystem.net.br/fortesystem16", "fortesystem20", "fotoprisma");
 //st=con.createStatement();
 
 

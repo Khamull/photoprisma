@@ -10,7 +10,8 @@ public class ServicoItem {
 	
 	//Lista todos os Itens de um Serviço
 	public String listaItens() {
-		return "SELECT * FROM servicoitem WHERE servicoID = '"+servico.servicoID+"'";
+		return "SELECT servicoproduto.*, servico.*  FROM servicoproduto inner join servico on servicoproduto.servicoID = servico.servicoID WHERE servicoproduto.servicoID = '"+servico.servicoID+"'";
+		//return "SELECT * FROM servicoproduto WHERE servicoID = '"+servico.servicoID+"'";
 	}
 	
 	//Pesquisa um item especifico

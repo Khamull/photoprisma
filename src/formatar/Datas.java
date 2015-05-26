@@ -1,6 +1,20 @@
 package formatar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.util.*;
+import java.text.ParsePosition;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.TimeZone;
+
+import org.apache.commons.lang3.time.DateFormatUtils;
+
+
 
 public class Datas {
 	
@@ -311,7 +325,14 @@ public class Datas {
 		
 		//Quebra a Data e tres parte ( dia , mes e ano)
 		String[] a = new String[3];
-		a = dataSimples.split("-");
+		if(dataSimples.contains("-"))
+		{
+			a = dataSimples.split("-");
+		}
+		else
+		{
+			a = dataSimples.split("/");
+		}
 		
 		//Recupera a data passada
 		int dia = Integer.parseInt(a[2]);
@@ -321,7 +342,6 @@ public class Datas {
 		hoje.set(ano, (mes-1), dia);
 		
 		hoje.add(Calendar.DATE, dias);
-		
 		int d = hoje.get(Calendar.DATE);
 		int m = hoje.get(Calendar.MONTH);		
 		int aa = hoje.get(Calendar.YEAR);
@@ -331,5 +351,32 @@ public class Datas {
 		
 		return data;
 	}
+	
+	//Esse Método forma uma Data usando as informações passadas por parametro
+		//em seguida pega o intervalo de dias também passado como parametreo
+		//e subtrai essa quantidade de dias a data.
+		//Após feito isso ele retorna a Data já Atualizada
+		public String somaIntervalo(String dataSimples, int dias) throws ParseException {
+			Calendar cal = Calendar.getInstance();
+			//Quebra a Data e tres parte ( dia , mes e ano)
+			String[] a = new String[3];
+			if(dataSimples.contains("-"))
+			{
+				a = dataSimples.split("-");
+			}
+			else
+			{
+				a = dataSimples.split("/");
+			}
+			
+			//Recupera a data passada
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			Date myDate = org.apache.commons.lang3.time.DateUtils.addDays(format.parse(dataSimples), dias);
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String data = df.format(myDate);
+			
+			return data;
+		}
+
 
 }

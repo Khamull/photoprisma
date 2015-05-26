@@ -221,6 +221,7 @@ function validaMaterial()//Caso o produto que esta sendo cadastrado seja um mate
 		}
 	document.getElementById("precoVenda").readOnly = true;
 	document.getElementById("lucro").readOnly = true;
+	document.getElementById("precoVendaServico").readOnly = true;
 	document.getElementById("precoCusto").readOnly = false;
 	document.getElementById("divMaterial").style.display = "none";
 	
@@ -233,6 +234,7 @@ function validaPossuir()//caso o produto cadastrado possua materiais, o preço de
 			document.getElementById("material").checked = false;
 			controle = 0;
 			document.getElementById("precoVenda").readOnly = false;
+			document.getElementById("precoVendaServico").readOnly = false;
 			document.getElementById("lucro").readOnly = false;
 			document.getElementById("precoCusto").readOnly = true;
 			document.getElementById("divMaterial").style.display = "inline";
@@ -240,6 +242,7 @@ function validaPossuir()//caso o produto cadastrado possua materiais, o preço de
 	else{
 		document.getElementById("divMaterial").style.display = "none";
 		document.getElementById("precoVenda").readOnly = false;
+		document.getElementById("precoVendaServico").readOnly = false;
 		document.getElementById("lucro").readOnly = false;
 		document.getElementById("precoCusto").readOnly = false;
 	}
@@ -312,7 +315,7 @@ function recuperaCusto (obj, id){//recupera preço de venda por produto
 	
 	//var valor = document.getElementById(idValor.id);
 	//valor.value = "1000,00";
-	$.post('sis_recupera_preco_venda.jsp', {materialID: obj.selectedOptions[0].value}, function(data){
+	$.post('sis_recupera_preco_custo.jsp', { materialID: obj.selectedOptions[0].value }, function(data){
 		var div1 = document.getElementById("un"+id);
 		var div2 = document.getElementById("valCusto"+id);
 		var div3 = document.getElementById("valCustoTot"+id);
@@ -321,7 +324,8 @@ function recuperaCusto (obj, id){//recupera preço de venda por produto
 	    div2.textContent = splt[0];
 	    div3.textContent = splt[0];
 	    SomaTudoAutomático();
-	});
+	}
+	);
 	
 }
 function multiplica(obj, id){
@@ -488,7 +492,8 @@ function getMoney(valor){
     		<option value="1">Foto Produto</option>
     	</select>
     </td>
-    <td colspan="2" align="left"></td>
+    <td align="left">Prazo</td>
+    <td align="left"><input type="number" min="0" step="1" value="0" name="prazo" style="text-align: right; width: 55px;" /></td>
   </tr>
   <tr>
     <td align="left">&nbsp;</td>

@@ -237,7 +237,8 @@ while(rs.next()){
   <td width="159" align="left"></td>
  </tr>
  <tr>
- 	<td colspan="2" align="left">altura :<%=rs.getString("altura")%> x largura :<%=rs.getString("largura")%> </td>
+ 	
+ 	<td colspan="2" align="left"><strong>Quantidade: <%=rs.getString("qtdPRoduto")%></strong></td>
  	<td colspan="2" align="left"></td>
 </tr>
  <tr>

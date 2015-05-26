@@ -215,12 +215,8 @@ function recuperaNome(){
     <select name="nivel" style="width:125px">
      <option value="1" selected="selected">Gerencial</option>
      <option value="2">Atendimento</option>
-     <option value="3">Arte Finalista</option>
-     <option value="4">Impressão</option>
-     <option value="5">Finalização/Acabamento</option>
-     <option value="6">Instalação</option>
-     <option value="8">Produção</option>
-     <option value="7">Vendas</option>
+     <option value="3">Sala Edição</option>
+     <option value="4">Produção</option>
     </select>
    </td>
    <td width="124" align="left"><a href="#" onclick="javascript: window.open('sis_view_niveis.jsp','niveis', 'width = 780; height = 600') "><img src="ico/ico_interrogacao.png" width="20" height="20" border="0" title="Ver Detalhes dos Niveis" /></a></td>

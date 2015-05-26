@@ -83,7 +83,7 @@ rs09 = st09.executeQuery(servicoProduto.listaProdutosOS(OS, Ano));
 
 <%
 //Pesquisa os serviços adicionados à O.S.
-rs06 = st06.executeQuery(servicoItem.listaItens());
+//rs06 = st06.executeQuery(servicoItem.listaItens());
 %>
 
 <%
@@ -261,8 +261,8 @@ while(rs.next()){
 
   <%
   
-  	altura = rs.getString("altura");
-  	largura = rs.getString("largura");
+  	//altura = rs.getString("altura");
+  	//largura = rs.getString("largura");
     String preco = null;
 	String total = null;
           
@@ -277,12 +277,6 @@ while(rs.next()){
  </tr>
  <tr>
   <td colspan="2" align="left"><strong>Quantidade: <%=rs.getString("qtdPRoduto")%></strong></td>
- </tr>
- <tr>
-  <td colspan="2" align="left"><strong>Altura: <%=rs.getString("altura")%></strong></td>
- </tr>
- <tr>
-  <td colspan="2" align="left"><strong>Largura: <%=rs.getString("largura")%></strong></td>
  </tr>
  <hr></hr>
 <%} %>	 

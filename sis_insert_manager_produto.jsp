@@ -59,6 +59,7 @@ else if(request.getParameter("possuiMaterial") != null){
 	}
 	produto.listaIDMaterias = ids_.substring(0, ids_.length() - 1);
 	produto.ListaQtdMatariais = Qtds_.substring(0, Qtds_.length() - 1);
+	produto.Prazo = Integer.parseInt(request.getParameter("prazo"));
 
 }
 else{

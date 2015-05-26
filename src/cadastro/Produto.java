@@ -19,6 +19,7 @@ public class Produto {
 	public String ListaQtdMatariais;
 	public String utilizacao;
 	public int Rotina;
+	public int Prazo;
 	//Lista todos os Produtos
 	public String listaProdutos() {
 		String pesquisaProduto = "SELECT fornecedor.fornecedorID, fornecedor.fornNomeFantasia, tipoproduto.tipoprodutoID, tipoproduto.tipo, produto.* ";
@@ -91,6 +92,16 @@ public class Produto {
 		//SELECT distinct(produto.nome), estoque.produtoID, produto.codigo, produto.estoque, produto.estoqueMinimo, ROUND(AVG(estoque.precoCusto),2) as precoCusto, estoque.unidade FROM estoque inner join produto on estoque.produtoID = produto.produtoID
 		//group by produto.nome
 		String pesquisaProduto = " SELECT precoServico, unidade";
+		pesquisaProduto += " FROM produto ";
+		pesquisaProduto += " WHERE produto.produtoID = '"+produtoID+"'";
+		
+		return pesquisaProduto;
+	}
+	
+	public String listaPrecosporID2() {
+		//SELECT distinct(produto.nome), estoque.produtoID, produto.codigo, produto.estoque, produto.estoqueMinimo, ROUND(AVG(estoque.precoCusto),2) as precoCusto, estoque.unidade FROM estoque inner join produto on estoque.produtoID = produto.produtoID
+		//group by produto.nome
+		String pesquisaProduto = " SELECT precoCusto, unidade";
 		pesquisaProduto += " FROM produto ";
 		pesquisaProduto += " WHERE produto.produtoID = '"+produtoID+"'";
 		
@@ -279,8 +290,8 @@ public class Produto {
 	
 	public String salvaProdutoPossuiMaterial() {
 		String salvaProd = "INSERT INTO produto ";
-		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, qtdUtilizar, idsMateriais, nome, codigo, unidade, precoCusto, preco, precoServico, estoqueminimo, estoque, lucro, lucroServico, rotina) VALUES";
-		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"', '"+ListaQtdMatariais+"', '"+listaIDMaterias+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+precoServico+"', '"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"', '"+lucroServico+"','"+Rotina+"' ) ";
+		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, qtdUtilizar, idsMateriais, nome, codigo, unidade, precoCusto, preco, precoServico, estoqueminimo, estoque, lucro, lucroServico, rotina, Prazo) VALUES";
+		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"', '"+ListaQtdMatariais+"', '"+listaIDMaterias+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+precoServico+"', '"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"', '"+lucroServico+"','"+Rotina+"','"+Prazo+"' ) ";
 		
 		return salvaProd;
 	}

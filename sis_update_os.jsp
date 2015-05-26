@@ -25,7 +25,7 @@ Statement st05 = con.createStatement();
 //Instancia um objeto do tipo ResultSet para receber resultado de uma Consulta
 ResultSet rs = null;
 ResultSet rs01;
-ResultSet rs02;
+ResultSet rs11;
 ResultSet rs03;
 ResultSet rs04;
 ResultSet rs05;
@@ -56,7 +56,7 @@ rs01 = st01.executeQuery(servicoitem.listaItens());
 <%
 //Pesquisa todos os produtos adicionados ao Servico
 servicoproduto.servico.servicoID = servico.servicoID;
-rs02 = st02.executeQuery(servicoproduto.listaProdutos());
+rs11 = st02.executeQuery(servicoproduto.listaProdutos());
 %>
 
 <%
@@ -219,11 +219,12 @@ function SalvarProd(servicoID){
     <td align="left"><font color="#009900"><strong><%=formato.format(rs.getDouble("valor")) %></strong></font></td>
     <td colspan="4"  align="left">
 	    &Uacute;ltima Altera&ccedil;&atilde;o&nbsp; &nbsp; <%=data.converteDeData(String.valueOf(rs.getDate("dataFim"))) %>
-	    <%if(rs.getString("status").equals("M")) {%><input type="button" name="concluir" onclick="javascript: window.location.href='sis_finalizar_servico.jsp?servicoID=<%=rs.getString("servicoID")%>&OS=<%=rs.getString("OS")%>&Ano=<%=rs.getString("anoServico").substring(0,4)%>'" style="background-color:transparent; background-image:url(images/icone-financeiro.png); background-repeat:no-repeat; width:200px; height:22px; border:0; background-size:15% 100%;
+	    <input type="button" name="concluir" onclick="javascript: window.location.href='sis_finalizar_servico.jsp?servicoID=<%=rs.getString("servicoID")%>&OS=<%=rs.getString("OS")%>&Ano=<%=rs.getString("anoServico").substring(0,4)%>'" style="background-color:transparent; background-image:url(images/icone-financeiro.png); background-repeat:no-repeat; width:200px; height:22px; border:0; background-size:15% 100%;
 	-webkit-background-size:15% 100%;
 	-o-background-size: 15% 100%;
 	-khtml-background-size: 15% 100%;
-	-moz-background-size: 15% 100%;" value="" title="Pagamentos" /><%} %></td>
+	-moz-background-size: 15% 100%;" value="" title="Pagamentos" />
+	</td>
     </tr>
     <tr>
     	<td align="left">ENTRADA</td>
@@ -242,110 +243,120 @@ function SalvarProd(servicoID){
   <tr>
     <td colspan="6" align="center"><hr color="#FFFF99" /></td>
   </tr>
-  <!-- <tr valign="middle">
-    <td colspan="4" align="center" bgcolor="#52658C"><font color="#FFFFFF">Adicionar Servi&ccedil;o&nbsp;</font><a href="javascript: addServico(<%=rs.getString("servicoID")%>)" ><img src="ico/ico_add.png" width="18" height="18" border="0" title="+ Adicionar Serviço" align="absmiddle" /></a></td>
-    </tr>
-  <tr>
-    <td colspan="4" align="center">
-  		
-        <table width="690" align="center">
-        <%while(rs01.next()){ %>
-         <tr>
-          <td width="530" align="left"><%=rs01.getString("descricao") %></td>
-          <td width="106" align="center"><%=formato.format(rs01.getDouble("valor")) %></td>
-          <td width="38" align="center"><a href="javascript: excluir(<%=rs01.getString("servicoitemID")%>, <%=rs01.getString("servicoID")%>)"><img src="ico/ico_cancelar.png" width="18" height="18" border="0" title="Excluir Serviço" /></a></td>
-         </tr>
-        
-         <tr>
-          <td align="center" colspan="3"><hr style="border:1px solid #CCCCCC" /></td>
-         </tr>
-         <%} %>
-        </table>    </td>
-  </tr>
-  <tr>
-    <td align="left">&nbsp;</td>
-    <td align="left">&nbsp;</td>
-    <td align="left">&nbsp;</td>
-    <td align="left">&nbsp;</td>
-  </tr>-->
   <tr align="center" valign="middle" bgcolor="#52658C">
     <td colspan="6"><font color="#FFFFFF">Produto&nbsp;</font><!-- a href="javascript: addProduto(<%=rs.getString("servicoID")%>)" ><img src="ico/ico_add.png" width="18" height="18" border="0" align="absmiddle" title="+ Adicionar Produto" /></a--></td>
     </tr>
-  <tr>
-    <td colspan="6" align="center">
-    
-      
-        <%int i = 0;
-        while(rs02.next()){ %>
-        <table width="690" align="center">
-        <!-- tr align="center" valign="middle" bgcolor="#CCCCCC">
-        	<td>Produto</td><td colspan="6" align="left"></td>
-        </tr-->
-         <tr>
-         <%if(request.getParameter("altera") != null && request.getParameter("altera").equals("0")) {%>
-		          <td colspan="2"  align="center" >
-		          	<select style="size:50px; max-width: 100px" id="prd">
-		          		<option value="<%=rs02.getString("produtoID")%>" selected="selected"><%=rs02.getString("nome") %></option>
-		          		<%rs04 = st04.executeQuery(servicoproduto.pesquisaOutrosProdutos(rs02.getString("produtoID"))); %>
-		          		<%while(rs04.next()){ %>
-		          			<option value="<%=rs04.getString("produtoID")%>"><%=rs04.getString("nome") %></option>
-		          		<%} %>
-		          	</select>	
-		          </td>
-		          <td colspan="2"  align="center">Altura : <input type="number" value="<%=rs02.getString("altura") %>" id="altura" min="0" step="0.01" style="text-align: right; size:50px; max-width: 50px"/></td>
-		          <td colspan="2"  align="center">Largura : <input type="number" value="<%=rs02.getString("largura") %>" id="largura" min="0" step="0.01" style="text-align: right; size:50px; max-width: 50px"/></td>
-		          <td colspan="2"  align="center">Quantidade : <input type="number" value="<%=rs02.getString("qtdProduto") %>" id="qtd" min="0" step="0.01" style="text-align: right; size:50px; max-width: 50px"/></td>
-		          <%if(rs02.getString("rotinaID").equals("0") || rs02.getString("rotinaID").equals("1")) {%>
-		          	<%if(rs02.getString("caminhoArte") == null){%>
-		          		<td colspan="4"  align="center">Caminho Arte : <input type="text" name="caminhoArte" id="caminhoArte" onchange="caminho(<%=rs.getString("servicoID")%>, this)"/></td>
-		          	<%}else if(request.getParameter("altera") != null && request.getParameter("altera").equals("0")){ %>
-		          		<td colspan="4"  align="center">Caminho Arte : <input type="text" name="caminhoArte" id="caminhoArte" onchange="caminho(<%=rs.getString("servicoID")%>, this)" value="<%=rs02.getString("caminhoArte") %>"/>
-		          	<%}else{ %>
-		          	<%} %>
-		          <%} %>
-		          <td  align="right"><a href="javascript: SalvarProd(<%=rs02.getString("servicoID")%>)"><img src="ico/ico_joinha.png" width="18" height="18" border="0" title="Salvar Alterações" /></a></td>
-          <%}else{ %>
-          	<td colspan="2"  align="center"><%=rs02.getString("nome") %></td>
-		          <td colspan="2"  align="center">Altura : <%=rs02.getString("altura") %></td>
-		          <td colspan="2"  align="center">Largura : <%=rs02.getString("largura") %></td>
-		          <td colspan="2"  align="center">Quantidade : <%=rs02.getString("qtdProduto") %></td>
-		          <%if(rs02.getString("rotinaID").equals("0") || rs02.getString("rotinaID").equals("1")) {%>
-		          	<%if(rs02.getString("caminhoArte") == null){%>
-		          		<td colspan="4"  align="center">Caminho Arte : <input type="text" name="caminhoArte" id="caminhoArte" onchange="caminho(<%=rs.getString("servicoID")%>, this)"/></td>
-		          	<%}else{ %>
-		          		<td colspan="4"  align="center">Caminho Arte : <%=rs02.getString("caminhoArte") %></td>
-		          	<%} %>
-		          <%} %>
-		          <td  align="right"><a href="javascript: alterarProd(<%=rs02.getString("servicoprodutoID")%>, <%=rs02.getString("servicoID")%>, <%=rs02.getString("produtoID") %>)"><img src="ico/ico_pedido.png" width="18" height="18" border="0" title="Alterar Produto" /></a></td>
-          <%} %>
-         </tr>
-		</table>
-		<%i++;
-		rs03 = st03.executeQuery(servicoproduto.listaProdutosNovo(rs02.getString("produtoID"))); %>
-		<table width="690" align="center">
-		<tr align="center" valign="middle" bgcolor="#CCCCCC"><td colspan="7" color="#CCCCCC"><font color="">Detalhes Material do Produto</font></td></tr>
-		<tr>
-          <td  align="left">Material</td>
-          <td  align="left" colspan="5"></td>
-          
-          <td  align="left"></td>
-        </tr>
-		<%while(rs03.next()){ %>
-		
-		<tr>
-          <td  align="left"><%=rs03.getString("nome") %></td>
-          <td  align="left" colspan="5"></td>
-
-          <td  align="left"></td>
-        </tr>
-		
-         	<%}i++; %>
-         	<tr>
-          <td align="center" colspan="7"><hr style="border:1px solid #CCCCCC" /></td>
-         </tr>
-         </table>
-         <%} %>
-    </td>
+    <tr>
+    	<table>
+<%while(rs11.next()){	
+				if(rs11.getInt("rotina") == 0){%>
+					 	<tr bgcolor="#EEEEEE" align="center">
+					 		<td><strong>Nome</strong></td>
+					 		<td><strong>Qtd</strong></td>
+					 		<td><strong>Valor</strong></td>
+					 		<td><strong>Qtd</strong></td>
+					 		<td><strong>Laboratório</strong></td>
+					 		<td><strong>Dt. Envio</strong></td>
+					 		<td><strong>Prev. Ret.</strong></td>
+					 		<td><strong>Ret. Real</strong></td>
+					 		<td><strong>Fase</strong></td>
+					 		<td><strong>Informações</strong></td>
+					 		<td><strong>Visualizado</strong></td>
+					 		<td><strong>Finalizado</strong></td>
+					 	</tr>
+					 	<tr align="center">
+					 		<td><%=rs11.getString("nome") %></td>
+					 		<td><%=rs11.getString("qtdProduto") %></td>
+					 		<td><%=formato.format(rs11.getFloat("valor")) %></td>
+					 		<td><%=rs11.getString("qtdProduto") %></td>
+					 		<%if(!rs11.getString("laboratorio").equals("Digite")){ %>
+					 			<td style="max-width: 90px;"><%=rs11.getString("laboratorio") %></td>					 			
+					 		<%}else{ %>
+								<td style="max-width: 90px;"></td>					 			
+					 		<%} %>
+					 		<%if(!rs11.getString("DataEnvio1").equals("0")){ %>
+					 			<td><%=data.converteDeData(rs11.getString("DataEnvio1")) %></td>
+					 		<%}else{ %>
+								<td></td>					 			
+					 		<%} %>				 		
+					 	<%if(!rs11.getString("DataEnvio1").equals("0")){ %>
+					 		<%if(!rs11.getString("DataPrevista").equals("0")){%>
+					 			<td><%=data.converteDeData(rs11.getString("DataPrevista")) %></td>
+					 		<%}else{ %>
+								<td></td>					 			
+					 		<%}
+					 		}else{%>
+					 			<td></td>
+					 		<%}%>
+					 		<%if(!rs11.getString("DataReal").equals("0")){ %>
+					 			<td><%=data.converteDeData(rs11.getString("DataReal")) %></td>
+					 		<%}else{ %>
+								<td></td>					 			
+					 		<%} %>
+					 		<%if(!rs11.getString("fase").equals("inicio")){ %>
+					 			<td><%=rs11.getString("fase") %></td>
+					 		<%}else{ %>
+					 			<td><%=rs11.getString("fase") %></td>
+					 		<%} %>
+					 		<td><%=rs11.getString("infos") %></td>
+					 		<%if(rs11.getInt("visualizado") != 1){ %>
+					 			<td><img src="ico/ico_visualizar.png" width="20" height="20" border="0" title="Informar Início do Serviço" /></td>
+					 		<%}else{%>
+					 				<td><img src="ico/ico_joinha.png" width="20" height="20" border="0" title="Serviço Iniciado Por: <%=rs11.getString("UsuarioVisualizador") %>" /></td>
+					 		<%} %>
+					 		<%if(rs11.getInt("Finalizado") == 0) {%>
+					 		<%if(rs11.getInt("visualizado") == 1){ %>
+					 			<%if(!rs11.getString("DataReal").equals("0")) {%>
+					 				<td><img src="ico/ico_cofirmar.gif" width="20" height="20" border="0" title="Clique aqui para confirmar Finalizacao"/></td>
+								<%}else{ %>
+									<td><img src="ico/ico_cofirmar.gif" width="20" height="20" border="0" title="Informe data real de retorno para poder Finalizar!"/></td>
+								<%} %>					 			
+					 		<% }else{%>
+					 				<td><img src="ico/ico_cofirmar.gif" width="20" height="20" border="0" title="Necessário Iniciar o Serviço Para Finaliza-lo!"/></td>
+					 		<%}
+					 		}else{ %>
+					 			<td><img src="ico/ico_cofirmar.gif" width="20" height="20" border="0" title="Finalizado Por: <%=rs11.getString("UsuarioFinalizador") %>"/></td>
+					 		<%} %>
+					 		
+					 		
+					 	</tr>
+					 	<tr>
+    						<td colspan="12" align="center" style="height:1px"><hr style="border:1px solid #333333" /></td>
+   						</tr>
+					<%
+					}
+					if(rs11.getInt("rotina") == 1){%>
+						<tr bgcolor="#EEEEEE" align="center">
+				 		<td><strong>Nome</strong></td>
+				 		<td><strong>Qtd</strong></td>
+				 		<td><strong>Valor</strong></td>
+				 		<td><strong>Prev. Ret.</strong></td>
+				 		<td><strong>Fase</strong></td>
+				 		<td><strong>Informações</strong></td>
+				 		<td><strong>Visualizado</strong></td>
+				 		<td><strong>Finalizado</strong></td>
+				 	</tr>
+				 	<tr align="center">
+				 		<td><%=rs11.getString("nome") %></td>
+				 		<td><%=rs11.getString("qtdProduto") %></td>
+				 		<td><%=formato.format(rs11.getFloat("valor")) %></td>
+				 		<%if(!rs11.getString("DataPrevista").equals("0")){%>
+				 			<td><input type="date" name="dataPrevistaRetorno" id="<%=rs11.getString("produtoID") %>" value="<%=rs11.getString("DataPrevista") %>" /></td>
+				 		<%}else{ %>
+							<td><input type="date" name="dataPrevistaRetorno" id="<%=rs11.getString("produtoID") %>"/></td>					 			
+				 		<%} %>
+				 		<td><%=rs11.getString("fase") %></td>
+				 		<td><%=rs11.getString("infos") %></td>
+				 		<td><a href="javascript: confirma(<%=rs11.getString("servicoID")%>)"><img src="ico/ico_visualizar.png" width="20" height="20" border="0" title="Visualizar Detalhes do Serviço" /> </a></td>
+				 		<td><a href="javascript: confirmaFinalizacao(<%=rs11.getString("servicoID")%>, <%=rs.getString("OS") %>)" onclick="fase(<%=rs11.getString("fase")%>)"><img src="ico/ico_cofirmar.gif" width="20" height="20" border="0" title="Clique aqui para confirmar Finalizacao"/></a></td>
+				 	</tr>
+				 	<tr>
+						<td colspan="12" align="center" style="height:1px"><hr style="border:1px solid #333333" /></td>
+						</tr>
+					<%}
+			}
+			%>
+</table>
     </tr>
   <tr>
     <td align="left">&nbsp;</td>
@@ -357,13 +368,8 @@ function SalvarProd(servicoID){
  <%} %>
  </td>
 </tr>
-<table width="690" align="center">
-<tr><!-- td colspan="7"><a <%=id %>><input type="submit" name="abrirOS" value="Abrir OS" onclick="(dataprevistaVerifica())" ></input></a>--></td></tr>
 </table>
-</table>
-</form>
 </div>
-
 
 <div id="rodape"><jsp:include page="inc/rodape.jsp" /></div>
 

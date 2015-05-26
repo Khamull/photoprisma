@@ -36,11 +36,8 @@ public class Servico {
 		pesquisaEmp += " case servico.dataprevista ";
 		pesquisaEmp += " when '0000-00-00' then \"0\"";
 		pesquisaEmp += " else servico.dataprevista";
-		pesquisaEmp += " end as dataprevista1, ";
-		pesquisaEmp += " case servico.dataAgendamento ";
-		pesquisaEmp += " when '0000-00-00' then \"0\"";
-		pesquisaEmp += " else servico.dataAgendamento";
-		pesquisaEmp += " end as dataAgendamento1 ";
+		pesquisaEmp += " end as dataprevista1 ";
+		
 		pesquisaEmp += "FROM servico INNER JOIN cliente ON cliente.clienteID = servico.clienteID ";
 		pesquisaEmp += "WHERE servico.servicoID = '"+servicoID+"'";
 		
@@ -86,7 +83,6 @@ public class Servico {
 	
 	public String listaServicosRelatorios(String dtInic, String dtInicPrev, String dtFim, String dtFimPrev, String depart, int St, Boolean prazo) {
 		String listaServ=""; 
-		String Controle = "";
 		listaServ += " select distinct (servico.OS),";
 		listaServ += " servico.anoServico,			";
 		listaServ += " servico.servicoID, 			";
@@ -228,14 +224,15 @@ public class Servico {
 			listaServ += " case servico.dataprevista ";
 			listaServ += " when '0000-00-00' then \"0\"";
 			listaServ += " else servico.dataprevista";
-			listaServ += " end as dataprevista1, ";
-			listaServ += " case servico.dataAgendamento ";
-			listaServ += " when '0000-00-00' then \"0\"";
-			listaServ += " else servico.dataAgendamento ";
-			listaServ += " end as dataAgendamento1 ";
+			listaServ += " end as dataprevista1 ";
+			//listaServ += " case servico.dataAgendamento ";
+			//listaServ += " when '0000-00-00' then \"0\"";
+			//listaServ += " else servico.dataAgendamento ";
+			//listaServ += " end as dataAgendamento1 ";
 			listaServ += "FROM servico INNER JOIN cliente ON cliente.clienteID = servico.clienteID ";
 			listaServ += "WHERE servico.empresaID = '"+empresa.empresaID+"' ";
-			listaServ += "and servico.finalizado <> 'F' AND servico.status <> 'F' and servico.passo NOT IN ('ORCAMENTO', 'ORÇAMENTO', 'ORCAMENTO ACEITO', 'ORÇAMENTO ACEITO') ORDER BY servico.servicoID DESC";
+			//listaServ += "and servico.finalizado <> 'F' AND servico.finalizado <> 'F' and servico.passo NOT IN ('ORCAMENTO', 'ORÇAMENTO', 'ORCAMENTO ACEITO', 'ORÇAMENTO ACEITO') ORDER BY servico.servicoID DESC";
+			listaServ += "and servico.finalizado <> 'F' AND servico.finalizado <> 'F' ORDER BY servico.servicoID DESC";
 			
 			return listaServ;
 		}
@@ -273,16 +270,13 @@ public class Servico {
 	
 	//Pesquisa todos os Serviços Não-Finalizados Por Empresa
 	public String listaServicosPendentes() {
-		String listaServ = "SELECT cliente.clienteID, cliente.clienteNomeFantasia, servico.*, ";
+		String listaServ = "SELECT cliente.*, servico.*, ";
 		listaServ += " case servico.dataprevista ";
 		listaServ += " when '0000-00-00' then \"0\"";
 		listaServ += " else servico.dataprevista";
-		listaServ += " end as dataprevista1, ";
-		listaServ += " case servico.dataAgendamento ";
-		listaServ += " when '0000-00-00' then \"0\"";
-		listaServ += " else servico.dataprevista";
-		listaServ += " end as dataAgendamento1 ";
+		listaServ += " end as dataprevista1 ";
 		listaServ += "FROM servico INNER JOIN cliente ON cliente.clienteID = servico.clienteID ";
+		listaServ += "and finalizado = 0 ";
 		listaServ += "WHERE servico.empresaID = '"+empresa.empresaID+"' ORDER BY servico.servicoID DESC";
 		
 		return listaServ;
@@ -322,19 +316,25 @@ public class Servico {
 		return listaServ;
 	}
 		
-	
 	public String listaServicosPendentesPorCamada(String nivelUsuario) {
-		String listaServ = "SELECT cliente.clienteID, cliente.clienteNomeFantasia, servico.*, ";
+		String listaServ = "SELECT cliente.clienteID, cliente.clienteNomeFantasia, servico.*, servico.finalizado as sericoFim, COUNT(servico.servicoID) as contador, servico.Finalizado as fim,  ";
 		listaServ += " case servico.dataprevista ";
 		listaServ += " when '0000-00-00' then \"0\"";
 		listaServ += " else servico.dataprevista";
-		listaServ += " end as dataprevista1, ";
-		listaServ += " case servico.dataAgendamento ";
-		listaServ += " when '0000-00-00' then \"0\"";
-		listaServ += " else servico.dataAgendamento";
-		listaServ += " end as dataAgendamento1 ";
-		listaServ += "FROM servico INNER JOIN cliente ON cliente.clienteID = servico.clienteID ";
-		listaServ += "WHERE finalizado <> 'F' AND servico.passo NOT IN ('ORCAMENTO', 'ORÇAMENTO', 'ORCAMENTO ACEITO', 'ORÇAMENTO ACEITO') AND status <> 'F'  AND servico.empresaID = '"+empresa.empresaID+"' and nivelUsuario = '"+ nivelUsuario +"' ORDER BY servico.servicoID DESC";
+		listaServ += " end as dataprevista1 ";
+		listaServ += " FROM servico INNER JOIN cliente ON cliente.clienteID = servico.clienteID ";
+		listaServ += " INNER JOIN servicoproduto SP on SP.servicoID = servico.servicoID ";
+		listaServ += " INNER JOIN produto p on P.produtoID = SP.produtoID ";
+		listaServ += " WHERE servico.finalizado <> 'F' AND servico.empresaID = '"+empresa.empresaID+"' ";
+		listaServ += " and sp.servicoFinalizado <> 1  ";
+		if(nivelUsuario.equals("3")){
+			listaServ += " and sp.fase in ('inicio', 'Env. Lab.', 'Reenv. Lab.', 'Ret. Prod.', 'Ed. Arte', 'Conferencia', 'Conferido')  ";
+		}
+		if(nivelUsuario.equals("4")){
+			listaServ += " and sp.fase in ('Agd. Prd.', 'Prod.')  ";
+		}
+		listaServ += "  GROUP BY servico.servicoID";
+		
 		
 		return listaServ;
 	}
@@ -482,6 +482,10 @@ public class Servico {
 			
 			return "SELECT servicoID+1 as ID FROM servico ORDER BY servicoID DESC LIMIT 1";
 		}
+		public String ultimoIDReal() {
+			
+			return "SELECT servicoID as ID FROM servico ORDER BY servicoID DESC LIMIT 1";
+		}
 		
 		public String valoresJaPagos(String OS, String Ano){
 			
@@ -490,12 +494,11 @@ public class Servico {
 	
 	
 	//Cadastra um novo Serviço
-	public String cadastraServico(String nivelUsuario_) {
+	public String cadastraServico() {
 		String salvaServ = "INSERT INTO servico ";
-		salvaServ += "(OS, anoServico, clienteID, empresaID, descricao, dataInicio, dataprevista, valor, usuario, nivelUsuario, passo, rotina) ";
+		salvaServ += "(OS, anoServico, clienteID, empresaID, descricao, dataInicio, dataprevista, valor, usuario) ";
 		salvaServ += "VALUES ";
-		salvaServ += "('"+OS+"', '"+anoServico+"', '"+cliente.clienteID+"', '"+empresa.empresaID+"', '"+descricao+"', '"+dataInicio+"','"+ dataPrevista +"','"+valor+"', '"+usuario.usuarioID+"','"+nivelUsuario_+"','PRODUCAO', '2')";
-		
+		salvaServ += "('"+OS+"', '"+anoServico+"', '"+cliente.clienteID+"', '"+empresa.empresaID+"', '"+descricao+"', '"+dataInicio+"','"+ dataPrevista +"','"+valor+"', '"+usuario.usuarioID+"')";
 		return salvaServ;
 	}
 	
