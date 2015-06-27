@@ -40,7 +40,7 @@ if(request.getParameter("nome") != null){
 }else if(request.getParameter("codigo") != null){
 	rs = st.executeQuery(produto.pesquisaProdutoPorCodigo(request.getParameter("codigo")));
 }else{
-	rs = st.executeQuery(produto.listaProdutos());
+	rs = st.executeQuery(produto.listaMateriais());
 }
 
 %>

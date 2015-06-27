@@ -1,4 +1,4 @@
-<%@ page errorPage="index.jsp?erro=3" %>
+
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.*" %>
 <%@ page import = "java.util.Date,java.text.SimpleDateFormat,java.text.ParseException"%>
@@ -63,6 +63,7 @@ if(request.getParameter("buscar") != null){
 //Variaveis de Descrição do Produto
 String produtoID = "";
 float estoque = 1;
+float qtds = 1;
 float estoqueParcial = 0;
 int minimo = 0;
 String descricao = "";
@@ -78,9 +79,29 @@ if(request.getParameter("codigo") != null){
 		produtoEstoque.empresa.empresaID = Integer.parseInt((String)session.getAttribute("empresaID"));
 		
 		//Realiza a pesquisa da quantidade de itens no estoque referente a esse produto na unidade em que está logado
-		rs04 = st04.executeQuery(produtoEstoque.pesquisaEstoque());
-		if(rs04.next()){
-			estoqueParcial = Float.parseFloat(rs04.getString("quantidade"));
+		if(!rs02.getString("rotina").equals("-1")){
+			if(!rs02.getString("rotina").equals("0")){
+				rs04 = st04.executeQuery(produtoEstoque.pesquisaEstoque());
+				if(rs04.next()){
+					estoqueParcial = Float.parseFloat(rs04.getString("quantidade"));
+				}
+			}
+			else{
+				rs04 = st04.executeQuery(produtoEstoque.pesquisaEstoqueMaterial(rs02.getString("idsMateriais")));
+				if(rs04.next()){
+					estoqueParcial = Float.parseFloat(rs04.getString("estoque"));
+					qtds = Float.parseFloat(rs02.getString("qtdUtilizar"));
+				}
+			}
+			
+		}
+		else
+		{
+			rs04 = st04.executeQuery(produtoEstoque.pesquisaEstoque());
+			if(rs04.next()){
+				estoqueParcial = Float.parseFloat(rs04.getString("quantidade"));
+			}
+		
 		}
 		
 		estoque = rs02.getFloat("estoque");
@@ -139,12 +160,20 @@ if(rs03.next()){
 //Verifica Campos preenchidos
 function verForm(){
 	
+	
 	//Verifica se foi passada a quantidade do produto
 	if(document.form1.quantidade.value == "1" && document.form1.flagLeitor.value == "."){
 		document.form1.flagLeitor.value = "-";
 		document.form1.flagLeitor.focus();
 		//document.form1.leitor.focus();
 		return false;	
+	}
+	
+	var Tot = parseFloat(document.form1.qtds.value) * parseFloat(document.form1.quantidade.value);
+	if(parseFloat(document.form1.estoqueParcial.value) <  Tot || Tot == 0){
+		alert("Quantidade de um dos materiais indisponivel em Estoque!");
+		//document.form1.quantidade.focus();
+		return false;
 	}
 	
 	if(document.form1.prodID.value == ""){
@@ -220,6 +249,8 @@ function pesquisaProduto(){
 	}
 	
 }
+
+
 
 //Verifica o Andamento da venda e determina o foco
 function verFoco(){
@@ -387,9 +418,9 @@ if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=
         <td colspan="2" align="left" class="tituloPDV">&nbsp;Produto</td>
        </tr>
        <tr>
-        <td height="40" align="left" valign="middle" background="images/label130.png"><input class="labelPDV" type="text" name="codigo" onblur="pesquisaProduto()" /></td>
+        <td height="40" align="left" valign="middle" background="images/label130.png"><input class="labelPDV" type="text" name="codigo" onchange="pesquisaProduto()" /></td>
         <td align="left" colspan="2" valign="middle" background="images/label365.png">
-        <select name="produtoID" class="selectPDV" onblur="pesquisaProduto()">
+        <select name="produtoID" class="selectPDV" onchange="pesquisaProduto()">
          <option value="" selected="selected">Selecione um Produto...</option>
          <%while(rs.next()){ %>
           <option value="<%=rs.getString("codigo") %>"><%=rs.getString("tipo") %> - <%=rs.getString("nome") %></option>
@@ -406,6 +437,7 @@ if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=
         <td width="235">
         <input type="hidden" name="qtddEstoque" value="<%=estoque%>" />
         <input type="hidden" name="estoqueParcial" value="<%=estoqueParcial%>" />
+        <input type="hidden" name="qtds" value="<%=qtds%>" />
         <input type="hidden" name="utilizacao" value="<%=Utilizacao%>" />                
         </td>
         <td width="130"></td>
@@ -582,7 +614,7 @@ if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=
 <script type="text/javascript">
 
 if(document.form1.quantidade.value == "1" && document.form1.flagLeitor.value == "-"){
-	verForm();
+	//verForm();
 }
 
 </script>

@@ -124,6 +124,7 @@ if(request.getParameter("msg") != null){
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_tipos.jsp'" value="Lista Tipos de Produto" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_estoque.jsp'" value="Alimentar Estoque" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_produtos.jsp'" value="Ver Estoque Total" />&nbsp;
+ <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_lista_materiais.jsp'" value="Estoque de Materiais" />
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_transferencia_estoque.jsp'" value="Transfer&ecirc;ncia" />&nbsp;
  <input type="button" class="botao" onclick="javascript: window.location.href='sis_view_lista_compras.jsp'" value="Lista de Compras" />
  </td>

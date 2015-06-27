@@ -76,21 +76,28 @@ servico.formaPagamento.formPagID 	= Integer.parseInt(request.getParameter("formI
 servico.cliente.clienteID 			= Integer.parseInt(request.getParameter("clienteID"));
 String valorVariavel = request.getParameter("valorVariavel");
 valorVariavel = valorVariavel.replace(",", ".").replace("R$ ", ""); 
-servico.valor						= Float.parseFloat(request.getParameter("valorVariavel"));
+servico.valor						= Float.parseFloat(valorVariavel);
 if(request.getParameter("pago") != ""){
 	String ent = request.getParameter("pago");
 	servico.entrada = Float.parseFloat(ent.replace(",","."));
 }else{
 	servico.entrada = 0;
 }
-if(request.getParameter("troco") != ""){
+if(request.getParameter("troco") != "" && request.getParameter("desconto") != "NaN"){
 	String tro = request.getParameter("troco");
-	servico.troco	= Float.parseFloat(tro.replace(",","."));
+	if(!tro.equals("NaN")){
+		servico.troco	= Float.parseFloat(tro.replace(",","."));
+	}
+	else
+	{
+		servico.troco = 0;
+	}
+	
 }else{
 	servico.troco = 0;
 }
 servico.vezes 			= Integer.parseInt(request.getParameter("parcelas"));
-if(request.getParameter("desconto") != ""){
+if(request.getParameter("desconto") != "" && request.getParameter("desconto") != "NaN"){
 	String desc = request.getParameter("desconto");
 	servico.desconto = Float.parseFloat(desc.replace(",","."));
 }else{
@@ -123,7 +130,7 @@ receber.empresa.empresaID	= Integer.parseInt((String)session.getAttribute("empre
 if(servico.entrada != 0){
 	String d = data.dataAtual();
 	receber.vencimento = data.converteParaData(d);
-	float entrada = (servico.entrada - servico.troco);
+	float entrada = servico.entrada - servico.troco;
 	st.execute(receber.cadastraEntradaServico(entrada));
 	
 	//Recupera o ID do ultimo receber lançado

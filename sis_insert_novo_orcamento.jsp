@@ -19,6 +19,7 @@
 <jsp:useBean id="produtos" class="cadastro.Produtos" scope="page"></jsp:useBean><!--Para Sele√ß√£o de Produtos que compoem a OS -->
 
 <jsp:useBean id="materiais" class="cadastro.Produto" scope="page"></jsp:useBean><!--Para Sele√ß√£o de materiais que compoem os produtos -->
+
 <jsp:useBean id="os" class="servico.Servico" scope="page"></jsp:useBean>
 
 <jsp:useBean id="caixa" class="caixaloja.Caixa" scope="page"></jsp:useBean>
@@ -64,7 +65,7 @@ caixa.usuario.login = (String)session.getAttribute("usuario");
 //Faz a consulta na Base de Dados
 rs07 = st07.executeQuery(caixa.verificaCaixa());
 
-if(rs07.next() || request.getParameter("orcamento").equals("1")){
+if(rs07.next()){
 
 
 String Telefone  =""; 
@@ -299,7 +300,7 @@ function addRow(tableID) {
     //newcell.children[0].rows[0].cells[4].childNodes[1].id = "valor"+tableIDControle;
     newcell.children[0].rows[0].cells[5].childNodes[1].id = "valor"+tableIDControle;
 }
-
+var contador = 0;
 function addRow_(tableID) {
 	contador++;
     var table = document.getElementById(tableID);
@@ -318,91 +319,48 @@ function addRow_(tableID) {
         		var _2 = 	"<td>";
         		var _3 = 	"<table>";
         		var	_4 = 		"<tr>";
-        		var _5 = 		"<td><INPUT type=\"checkbox\" name=\"chk[]\"/></td>";
+        		var _5 = 		"<td><INPUT type=\"checkbox\" name=\"chk[]\" id=\"chk"+contador+"\"/></td>";
         		var _6 =					"<TD colspan=\"0\" align=\"center\">";
-        		var _7 =						"<SELECT name=\"produtoID[]\" required=\"required\" onchange=\"ExibeCaminho(this)\">";
+        		var _7 =						"<SELECT name=\"produtoID[]\" required=\"required\" onchange=\"recuperaCusto(this)\" id=\""+contador+"\">";
         		var _8 =							"<option value=\"\">Selecione Produto. . .</option>";
         		var _9 =							<%=sel3%>;
         		var _10 =								"";
         		var _11 =							"";
         		var _12 =						"</SELECT>"
         		var _13 =					"</TD>"
-        		var _14 =					"<td>"
-        		var _15 =						"Dimensıes do Produto";
-        		var _16 =					"</td>";
-        		var _17 =					"<td>";
-        		var _18 =						"Altura";
-        		var _19 =						"<INPUT type=\"number\" step=\"0.01\" name=\"altura[]\" min=\"0\" value=\"0\" style=\"width:75px; text-align: right;\"/>";
-        		var _20 =					"</td>";
-        		var _21 =					"<td>";
-        		var _22 =						"Largura";
-        		var _23 =						 "<INPUT type=\"number\" name=\"largura[]\" min=\"0\" step=\"0.01\" value=\"0\" size=\"5\" style=\"width:75px; text-align: right;\"/>";
-        		var _24 =					"</td>";
+        		var _14 =					""
+        		var _15 =						"";
+        		var _16 =					"";
+        		var _17 =					"";
+        		var _18 =						"";
+        		var _19 =						"";
+        		var _20 =					"";
+        		var _21 =					"";
+        		var _22 =						"";
+        		var _23 =						 "";
+        		var _24 =					"";
         		var _25 =					"<td>";
         		var _26 =					"Quantidade";
-        		var _27 =						 "<INPUT type=\"number\" name=\"qtdProduto[]\" min=\"1\" step=\"1\" value=\"1\" size=\"5\" style=\"width:75px; text-align: right;\" onchange=\"Multiplica(this)\"/>";
+        		var _27 =						 "<INPUT type=\"number\" name=\"qtdProduto[]\" min=\"1\" step=\"1\" value=\"1\" size=\"5\" style=\"width:75px; text-align: right;\" onchange=\"Multiplica_(this)\" id=\"qtd"+contador+"\"/>";
         		var _28 =					"</td>";
-        		var _29 =					"<td>";
-        		var _30 =					"Valor Produto";
-        		var _31 =						"<input name=\"valorProdutoTotal[]\" type=\"number\" pattern=\"(\d{3})([\.])(\d{2})\" value=\"0.00\" size=\"20\" maxlength=\"10\" onkeypress=\"verPonto(); return numero(this.value)\"  style=\"text-align: right;\"/>";
+        		var _29 =					"<td>Valor Produto<input name=\"valorProduto[]\" type=\"text\"  value=\"0.00\" size=\"20\" maxlength=\"10\" onkeypress=\"verPonto(); return numero(this.value)\" required=\"required\" style=\"text-align: right;\" id=\"val"+contador+"\"/></td><td>";
+        		var _30 =					"Valor Total";
+        		var _31 =						"<input name=\"valorProdutoTotal[]\" type=\"number\" pattern=\"(\d{3})([\.])(\d{2})\" value=\"0.00\" size=\"20\" maxlength=\"10\" onkeypress=\"verPonto(); return numero(this.value)\"  style=\"text-align: right;\" id=\"valT"+contador+"\"/>";
         		var _32 =					"</td>";
         		var _33 =					"<td  id=\"caminho1\">";
-        		var _34 = 					"Arte: ";
+        		var _34 = 					"InformaÁıes Adicionais: ";
         		var _35 =					"</td>";
         		var _36 =					"<td  id=\"caminho2\">";
-        		var _37 =						"<input type=\"text\" name=\"caminho[]\" value=\"\" />";
+        		var _37 =						"<input type=\"text\" name=\"infos[]\" value=\"\" />";
         		var _38 =					"</td>";
         		var _39 =				"</tr>";
-        		var _40 =				"<tr>";
-        		var _41 =					"<td></td>";
-        		var _42 =					"<td colspan=\"4\">";
-        		var _43 =					"<TABLE id=\"dataTable"+contador+"\"  border=\"0\" align=\"center\" style=\"border-radius:9px; border:1px solid black\" >"; //Alterar ID
-        		var _44 =									"<TR>";
-        		var _45 =										"<TD><INPUT type=\"checkbox\" name=\"chk[]\"/></TD>";
-        		var _46 =										"<TD>";
-        		var _47 =											"<table border=\"0\">";
-        		var _48 =											"<TR>";
-        		var _49 =												"<TD><SELECT name=\"materiais"+contador+"[]\" )\">";
-        		var _50 =													<%=selecione2%>;
-        		var _51 =												"</td>"
-        		var _52 =												"<TD>";
-        		var _53 =													"Quantidade";
-        		var _54 =												"</td>";
-        		var _55 =												"<td>";
-        		var _56 =													 "<td><INPUT type=\"number\" name=\"QuantidadeR"+contador+"[]\" min=\"0\" size=\"5\" step=\"0.01\" value=\"0\" required style=\"width:75px; text-align: right;\"/></td>";
-        		var _57 =												"</td>";
-        		var _58 =												"<td>";
-        		var _59 =													"Valor";
-        		var _60 =												"</td>";
-        		var _61 =												"<td> ";
-        		var _62 =													"<input type=\"number\" pattern=\"(\d{3})([\.])(\d{2})\" name=\"valorMaterial"+contador+"[]\" size=\"5\" required style=\"width:75px; text-align: right;\" value=\"0.00\" step=\"0.01\" min=\"0\" maxlength=\"10\" onchange=\"setTwoNumberDecimal(this);somavalor(this);verPonto();return numero(this.value)\"/>";
-        		var _63 =												"</td>";    
-        		var _64 =												"<td></td>";
-        		var _65 =												"<td></td>";
-        		var _66 =											"</TR>";
-        		var _67 =											"</table>";
-        		var _68 =										"</TD>";
-        		var _69 =									"</TR>";
-        		var _70 =							"</TABLE>";
-        		var _71 =							"</td>"
-        		var _72 =							"<td align=\"center\">";
-        		var _73 =								"<img src=\"images/add.png\" style=\"display:block;width:15px;height:20px;text-indent:-9000em;overflow:hidden;\" title=\"Adicionar Material\" onclick=\"addRow('dataTable"+contador+"')\">";//ID Atual da tabel
-        		var _74 =								"<img src=\"images/delete.png\" style=\"display:block;width:15px;height:20px;text-indent:-9000em;overflow:hidden;\" title=\"Remover Material\" onclick=\"deleteRow('dataTable"+contador+"')\">";
-        		var _75 =							"</td>";
-        		var _76 =				"</tr>";
         		var _77 =				"</table>";
         		var _78 =				"</td>";
         		var _79 =			"</tr>";
         		
         		
-        		var str = "".concat(_1).concat(_2).concat(_3).concat(_4).concat(_5).concat(_6).concat(_7).concat(_8).concat(_9).concat(_11).concat(_12).concat(_13).concat(_14).concat(_15).concat(_16).concat(_17).concat(_18).concat(_19).concat(_20).concat(_21).concat(_22).concat(_23).concat(_24).concat(_25).concat(_26).concat(_27).concat(_28).concat(_29).concat(_30).concat(_31).concat(_32).concat(_33).concat(_34).concat(_35).concat(_36).concat(_37).concat(_38).concat(_39).concat(_40).concat(_41).concat(_42).concat(_43).concat(_44).concat(_45).concat(_46).concat(_47).concat(_48).concat(_49).concat(_50).concat(_51).concat(_52).concat(_53).concat(_54).concat(_55).concat(_56).concat(_57).concat(_58).concat(_59).concat(_60).concat(_61).concat(_62).concat(_63).concat(_64).concat(_65).concat(_66).concat(_67).concat(_68).concat(_69).concat(_70).concat(_71).concat(_72).concat(_73).concat(_74).concat(_75).concat(_76).concat(_77).concat(_78).concat(_79);
-        		
-        		
-        		
-        		
-        		
-        		
-        		
+        		var str = "".concat(_1).concat(_2).concat(_3).concat(_4).concat(_5).concat(_6).concat(_7).concat(_8).concat(_9).concat(_11).concat(_12).concat(_13).concat(_14).concat(_15).concat(_16).concat(_17).concat(_18).concat(_19).concat(_20).concat(_21).concat(_22).concat(_23).concat(_24).concat(_25).concat(_26).concat(_27).concat(_28).concat(_29).concat(_30).concat(_31).concat(_32).concat(_33).concat(_34).concat(_35).concat(_36).concat(_37).concat(_38).concat(_39).concat(_77).concat(_78).concat(_79);
+     
         		newcell.innerHTML = str;//table.rows[0].cells[i].innerHTML = "teste";
         		//alert(newcell.childNodes);
         		switch(newcell.childNodes[0].type) {
@@ -414,7 +372,6 @@ function addRow_(tableID) {
 	                    break;
 	            case "select-one":
 	                    newcell.childNodes[0].selectedIndex = 0;
-	                    
 	                    break;
         }
         		
@@ -424,15 +381,7 @@ function addRow_(tableID) {
     //newcell.children[0].rows[0].cells[5].childNodes[1].id = "valor"+contador+"[]";
 }
 
-function recuperaCusto (obj, idValor){//recupera preÁo de venda por produto
-	
-	var valor = document.getElementById(idValor.id);
-	//valor.value = "1000,00";
-	$.post('sis_recupera_preco_venda.jsp', {materialID: obj.selectedOptions[0].value}, function(data){
-		valor.value=data;
-	});
-	
-}
+
 
 
 function deleteRow(tableID, tipo) {
@@ -493,26 +442,9 @@ function deleteRow_(tableID, tipo) {
                 //alert("NU+00E3o √© psoss√≠vel remover todas as linhas.");
                 break;
             }
-        	//if(tipo ==0)
-        	//	{
-        	//var tabela = row.cells[1].childNodes[0].nextSibling;
-           	//var tabelaRow = tabela.rows[0];
-           	//var campo = tabelaRow.cells[8].childNodes[0];
-           	//var campo = tabelaRow.cells[5].childNodes[1].value;
-           	//if(campo != null || campo != "")
-           	//	{subtrai(campo);}
-        	//	}
-        	//else
-        	//	{
-	        		//var tabela = row.cells[1].childNodes[0];
-	               	//var tabelaRow = tabela.rows[1];
-	              	//var campo = tabelaRow.cells[8].childNodes[0];
-	              	//if(campo.value != null || campo.value != "")
-	              	//	{subtrai(campo.value);}
-        	//	
-        	//	}
-        	
-           	
+        	var id = apenasNumeros(chkbox.id);
+        	var total = document.getElementById("valT"+id);
+        	subtrai(total.value);
             table.deleteRow(i);
             rowCount--;
             i--;
@@ -525,6 +457,75 @@ function deleteRow_(tableID, tipo) {
     }
 }
 
+function recuperaCusto (obj){//recupera preÁo de venda por produto
+	var idObj = obj.id;
+	var valor = document.getElementById("val"+idObj);
+	var valor1 = document.getElementById("valT"+idObj);
+	//valor.value = "1000,00";
+	$.post('sis_recupera_preco_venda.jsp', {materialID: obj.selectedOptions[0].value}, function(data){
+		valor.value=data.trim();
+		valor1.value =data.trim();
+		multiplica(obj);
+	});
+}
+
+function multiplica(obj){
+	var venda = document.getElementById("val"+obj.id);
+	var total = document.getElementById("valT"+obj.id);
+	var qtd	  = document.getElementById("qtd"+obj.id);
+	var tot = qtd.value * venda.value;
+	total.value =  tot.toFixed(2);
+	SomaTudoAutom·tico();
+}
+function Multiplica_(obj){
+	var ID = apenasNumeros(obj.id);
+	var venda = document.getElementById("val"+ID);
+	var total = document.getElementById("valT"+ID);
+	var qtd	  = document.getElementById("qtd"+ID);
+	var tot = qtd.value * venda.value; 
+	total.value = tot.toFixed(2);
+	SomaTudoAutom·tico();
+}
+
+function apenasNumeros(string) 
+{
+    var numsStr = string.replace(/[^0-9]/g,'');
+    return parseInt(numsStr);
+}
+
+function SomaTudoAutom·tico(){
+	var tabela = document.getElementById("prod0");
+	var rowCount=tabela.rows.length;
+	var total = 0;
+	var valorAtual = 0;
+	var varParc = 0;
+	for(i = 0; i < rowCount; i++){
+		varParc = document.getElementById("valT"+i);
+		try{
+			if(isNumber(varParc.value)){
+			
+				valorAtual = valorAtual + parseFloat(varParc.value);//Recupera o valor das divs de preÁo de custo total para somar ao total de custo
+			}
+			
+		}
+		catch (e) {
+			// TODO: handle exception
+		}
+	}
+	document.getElementById("valorTotal").value = valorAtual.toFixed(2);
+	//venda();
+	
+}
+
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function getMoney(valor){
+	return parseFloat(valor)*100;
+}
+
+
 
 function setTwoNumberDecimal(obj) {
     obj.value = parseFloat(obj.value).toFixed(2);
@@ -535,9 +536,9 @@ function subtrai(valor)
 {
 	if(valor != "0.00" && valor != ""){
 		//form1.valorProdutoTotal.value = parseFloat(parseFloat(verPonto_Calculo(form1.valorProdutoTotal.value)) - parseFloat(verPonto_Calculo(parseFloat((parseFloat(valor)))).toFixed(2))).toFixed(2);
-		
-		form1.valorProdutoTotal.value = parseFloat(form1.valorProdutoTotal.value-valor).toFixed(2);
-		form1.valorTotal.value = form1.valorProdutoTotal.value;
+		var Valtot = form1.valorTotal.value;
+		Valtot = parseFloat(Valtot)-parseFloat(valor);
+		form1.valorTotal.value = Valtot.toFixed(2);
 	}
 }
 
@@ -602,7 +603,7 @@ function verForm(){
 
 function pesquisaCliente(){
 	var clienteID = document.form1.clienteID.value;
-	window.location.href="sis_insert_novo_orcamento.jsp?orcamento=1&clienteID="+clienteID;	
+	window.location.href="sis_insert_nova_os.jsp?clienteID="+clienteID;	
 }
 
 </script>
@@ -612,28 +613,7 @@ function pesquisaCliente(){
 
 //Valida se o Campo √© Num√©rico (COM V√çRGULA " , " )
 function numero()	{
-if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=44){return false;} 
-}
-
-function ExibeCaminho(obj)	{//Exibe campo para inserÁ„o de caminho da arte
-	
-	$.post('sis_retorna_rotina.jsp', {prodID: obj.selectedOptions[0].value}, function(data){
-		
-		if (data == 0 || data == 1)
-		{
-			document.getElementById("caminho1").style.visibility="visible";
-			document.getElementById("caminho2").style.visibility="visible";
-			document.getElementById("caminho2").setAttribute("required","required");
-		}
-		else
-		{
-			document.getElementById("caminho1").style.visibility="hidden";
-			document.getElementById("caminho2").style.visibility="hidden";
-			document.getElementById("caminho2").setAttribute("required","");
-		}
-	});
-	
-	 
+	if (event.keyCode<48 && event.keyCode!=44 || event.keyCode>57 && event.keyCode!=44){return false;} 
 }
 
 //Verifca se tem "," ao inv√©s de "." e Substitui
@@ -679,10 +659,11 @@ function verPonto_Calculo(val){
 </tr>
 <tr>
  <td valign="top" align="center">
- <form method="post" name="form1" action="sis_insert_manager_orcamento_mix.jsp" onsubmit="return verForm(this)">
+ <form method="post" name="form1" action="sis_insert_manager_servico.jsp" onsubmit="return verForm(this)">
  <table width="696" align="center" cellpadding="2" cellspacing="2">
+ 
   <tr bgcolor="#EEEEEE">
-  <td colspan="6" align="center"><strong>NOVO OR&Ccedil;AMENTO</strong></td>
+  <td colspan="6" align="center"><strong>NOVO OR&Ccedil;AMENTO</strong><input  name="tipo" type="hidden" value="1" id="tipo"/></td>
   </tr>
   
   <tr><TR><%if(rs02.next()){
@@ -699,8 +680,9 @@ function verPonto_Calculo(val){
 	<%}
 	 else
 	 { %>
+	 	<td align="left"><!-- N&deg; O.S.--></td>
 	 	<td align="left">
-			<input type="number" min="0" step="1" value="1" name="os" style="width:50px;text-align: right" required align="left" ><strong><%="/"+cal.get(Calendar.YEAR) %></strong>
+			<input type="number" min="0" step="1" value="1" name="OS" style="width:50px;text-align: right" required align="left" readonly="readonly"><strong><%="/"+cal.get(Calendar.YEAR) %></strong>
 		</td>
 	 <%} %>
     <td width="52" align="left">Cliente</td>
@@ -752,12 +734,12 @@ function verPonto_Calculo(val){
     <%} %>
     	
     </tr>
-	  <tr bgcolor="#F9F6F2">
+	<tr bgcolor="#F9F6F2">
 	  	<TD>Previsao</TD>
     	<TD><input type="date" value="" id="previsao" name="previcao" required></TD>
 
 	    <td align="left">VALOR VENDA</td>
-	    <td align="left" colspan="6"><font color="#009900"><strong><input name="valorTotal" type="text" required="required" value="" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)" style="text-align: right;" /></strong></font></td>
+	    <td align="left" colspan="6"><font color="#009900"><strong><input id="valorTotal" name="valorTotal" type="text" required="required" value="" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)" style="text-align: right;" /></strong></font></td>
 	</tr>
 	<tr>
 	<td colspan="" align="center">
@@ -765,80 +747,36 @@ function verPonto_Calculo(val){
 				<img src="images/delete.png" style="display:block;width:15px;height:20px;text-indent:-9000em;overflow:hidden;" title="Remover Produto" onclick="deleteRow_('prod0')">
 	</td>
 	<td colspan="4"> 
-		<table  style="border-radius:15px; border:1px solid black" align="center" cellpadding="2" cellspacing="2" id="prod0">
+		<table  style="border-radius:15px; border:1px solid black; width: 100%;" align="center" cellpadding="2" cellspacing="2" id="prod0">
 			<tr>
 				<td>
 				<table>
 				<tr>
-					<td><INPUT type="checkbox" name="chk[]"/></td>
-					<TD colspan="0" align="center">
-						<SELECT name="produtoID[]" required="required" onchange="">
+					<td><input type="checkbox" name="chk[]" id="chk0"/></td>
+					<td colspan="0" align="center">
+						<select name="produtoID[]" required="required" onchange="recuperaCusto(this)" id="0">
 							<option value="">Selecione Produto. . .</option>
 							<%=sel2 %>
-						</SELECT>
-					</TD>
-					<td>
-						Dimensıes do Produto
-					</td>
-					<td>
-						Altura
-						 <INPUT type="number" step="0.01" name="altura[]" min="0" value="" style="width:75px; text-align: right;"/>
-					</td>
-					<td>
-						Largura
-						 <INPUT type="number" name="largura[]" min="0" step="0.01" value="" size="5" style="width:75px; text-align: right;"/>
+						</select>
 					</td>
 					<td>
 					Quantidade
-						 <INPUT type="number" name="qtdProduto[]" min="1" step="1" value="1" size="5" style="width:75px; text-align: right;" onchange="Multiplica(this)"/>
+						 <input type="number" name="qtdProduto[]" min="1" step="1" value="1" size="5" style="width:75px; text-align: right;" onchange="Multiplica_(this)" id="qtd0"/>
 					</td>
 					<td>
 					Valor Produto
-						 <input name="valorProdutoTotal[]" type="text"  value="" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)" required="required" style="text-align: right;"/>
+						 <input name="valorProduto[]" type="text"  value="0.00" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)" required="required" style="text-align: right;" id="val0" onchange=""/>
+					</td>
+					<td>
+					Valor Total
+						 <input name="valorProdutoTotal[]" type="text"  value="0.00" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)" required="required" style="text-align: right;" id="valT0" onchange=""/>
 					</td>
 					<td  id="caminho1">
-						Arte: 
+						InformaÁıes Adicionais: 
 					</td>
-					<td id="caminho2">
-						<input type="text" name="caminho[]" value="" />
+					<td id="caminho2" width="150px">
+						<input type="text" name="infos[]" value="" />
 					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td colspan="4">
-					<TABLE id="dataTable0"  border="0" align="center" style="border-radius:9px; border:1px solid black" > 
-									<TR>
-										<TD><INPUT type="checkbox" name="chk[]"/></TD>
-										<TD>
-											<table border="0">
-											<TR>
-												<TD>
-													<%=selecione%>
-												</td>
-												<TD>
-													Quantidade
-												</td>
-												<td>
-													 <td><INPUT type="number" name="QuantidadeR0[]" min="0" size="5" step="0.01" value="" required style="width:75px; text-align: right;" required="required"/></td>
-												</td>
-												<td>
-													Valor
-												</td>
-												<td> 
-													<input type="number"  name="valorMaterial0[]" size="5" required style="width:75px; text-align: right;" value="" step="0.01" min="0" maxlength="10" onkeypress="verPonto(); return numero(this.value)" required="required"/>
-												</td>    
-												<td></td>
-												<td></td>
-											</TR>
-											</table>
-										</TD>
-									</TR>
-							</TABLE>
-							</td>
-							<td colspan="" align="center">
-								<img src="images/add.png" style="display:block;width:15px;height:20px;text-indent:-9000em;overflow:hidden;" title="Adicionar Produto" onclick="addRow('dataTable0')">
-								<img src="images/delete.png" style="display:block;width:15px;height:20px;text-indent:-9000em;overflow:hidden;" title="Remover Produto" onclick="deleteRow('dataTable0')">
-							</td>
 				</tr>
 				</table>
 				</td>
@@ -860,7 +798,7 @@ function verPonto_Calculo(val){
 	   <td align="center" colspan="4"><textarea name="descricao" required></textarea></td>
 	  </tr>
 	  <tr>
-	  <input name="valor" type="hidden" value="0.00" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)"/>
+	     <input name="valor" type="hidden" value="0.00" size="20" maxlength="10" onkeypress="verPonto(); return numero(this.value)"/>
 	     <td align="left" colspan="2"><input type="submit" name="CADASTRAR" value="Cadastrar" class="botao" />
 	     </td>
      </tr>
@@ -885,6 +823,7 @@ else
 </tr>
 
 </table>
+
 </div>
 <div id="rodape2"><jsp:include page="inc/rodape.jsp" /></div>
 </div>

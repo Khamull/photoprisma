@@ -1,4 +1,4 @@
-<%@ page errorPage="index.jsp?erro=3" %>
+
 <%@ page import="java.sql.*" %>
 <%@ include file="inc/conexao.jsp" %>
 <%@ include file="inc/seguranca.jsp" %>
@@ -84,7 +84,7 @@ cliente.clienteID = Integer.parseInt(rs02.getString("clienteID"));
 String nome = "";
 String cpf = "";
 
-rs05 = st05.executeQuery(cliente.clientePorID());
+rs05 = st05.executeQuery(cliente.clienteID());
 
 //Atribui os valores às variaveis
 

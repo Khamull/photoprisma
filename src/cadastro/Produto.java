@@ -30,6 +30,16 @@ public class Produto {
 		return pesquisaProduto;
 	}
 	
+	public String listaMateriais() {
+		String pesquisaProduto = " SELECT fornecedor.fornecedorID, fornecedor.fornNomeFantasia, tipoproduto.tipoprodutoID, tipoproduto.tipo, produto.* ";
+		pesquisaProduto += " FROM produto INNER JOIN fornecedor ON fornecedor.fornecedorID = produto.fornecedorID ";
+		pesquisaProduto += " LEFT JOIN tipoproduto ON tipoproduto.tipoprodutoID = produto.tipoprodutoID ";
+		pesquisaProduto += " where utilizacao =  'M' ";
+		pesquisaProduto += " ORDER BY nome ASC";
+		
+		return pesquisaProduto;
+	}
+	
 	public String listaProdutosMateriais() {
 		String pesquisaProduto = "SELECT * ";
 		pesquisaProduto += " FROM produto ";

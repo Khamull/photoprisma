@@ -67,7 +67,12 @@ if(rs11.next()){
 else{
 	servico.OS = "1";
 }
-
+if(request.getParameter("tipo") != null){
+servico.tipo = Integer.parseInt(request.getParameter("tipo"));
+}else
+{
+	servico.tipo = 0;
+}
 //Recupera valores do formulário e atribui ao objeto servico
 servico.cliente.clienteID 	= Integer.parseInt((String)request.getParameter("clienteID").trim());
 servico.empresa.empresaID	= Integer.parseInt((String)session.getAttribute("empresaID"));

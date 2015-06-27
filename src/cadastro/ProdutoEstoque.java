@@ -14,6 +14,17 @@ public class ProdutoEstoque {
 		return Lista;
 	}
 	
+	public String pesquisaEstoqueMaterial(String materiais) {
+		String [] lista = materiais.split("#");
+		String IN = "";
+		for(int i = 0; i< lista.length; i++)
+		{
+			IN += lista[i]+", ";
+		}
+		String Lista = "select estoque from produto where produtoID in ("+IN.substring(0, IN.length()-2)+")";
+		return Lista;
+	}
+	
 	
 	//Salva quantidade no Estoque
 	public String salvaQuantidade() {

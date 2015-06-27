@@ -255,7 +255,16 @@ function insereData (produtoID, servicoID, servicoprodutoID, obj, tipo){//Altera
 	});
 }
 
-
+function insere_protocolo (produtoID, servicoID, servicoprodutoID, obj){//Altera Protocolos
+//	var idObj = obj.id;
+//	var valor = document.getElementById("val"+idObj);
+//	var valor1 = document.getElementById("valT"+idObj);
+	//valor.value = "1000,00";
+	$.post('sis_insere_protocolo.jsp', {protocolo: obj.value, produtoID: produtoID, servicoID: servicoID, servicoprodutoID: servicoprodutoID}, function(data){
+		alert(data.trim());
+	  	location.reload();  
+	});
+}
 
 
 </script>
@@ -300,9 +309,10 @@ function confirmaFinalizacaoServico(servicoID){
 	$.post('sis_finaliza_servico.jsp',  {servicoID: servicoID}
 		  ,function(data){
 			  	alert(data.trim());
-			  	//location.reload();  	
+			  	location.reload();  	
 		});
 }
+
 
 </script>
 </head>
@@ -322,16 +332,15 @@ function confirmaFinalizacaoServico(servicoID){
 		<%if(session.getAttribute("nivel").equals("2") || session.getAttribute("nivel").equals("1")){  %>
 		
 			<input type="button" class="botao" onclick="javascript: window.location.href='sis_insert_nova_os.jsp'" value=" + Nova OS" />&nbsp;
-		
-			<input type="button" class="botao" onclick="javascript: window.location.href='sis_servicos_fechados.jsp'" value="OS's Fechados" />
+			<!-- input type="button" class="botao" onclick="javascript: window.location.href='sis_servicos_fechados.jsp'" value="OS's Fechados" /-->
 	  </div>
 	  <div id="botoes" style="width: 100%; float: none;">
 				<form name="formBuscaTodos" method="post">
-				   	<input type="checkbox" name="todos" onclick="this.form.submit();" value="buscarTodas"  />
+				   	<input type="checkbox" name="todos" onclick="this.form.submit();" value="buscarTodas"/>
 				   	<strong>Pesquisar Todas OS's Ativas</strong>
 				 </form>
 				<form name="formBuscaTodosOrcamentos" method="post">
-					<input type="checkbox" name="todosOrcamentos" onclick="this.form.submit();" value="buscarTodasOrcamentos"  />
+					<input type="checkbox" name="todosOrcamentos" onclick="this.form.submit();" value="buscarTodasOrcamentos" />
 					<strong>Pesquisar Todos Orçamentos</strong>
 				</form>
 			
@@ -342,6 +351,11 @@ function confirmaFinalizacaoServico(servicoID){
 			
 			<%} %>
 		</div>
+		<%if(!msg.equals("") && msg != null) {%>
+			<div id="msg" style="color: red; width: 100%; text-align: center">
+				<%=msg %>
+			</div>
+		<%} %>
 			<div id="OS">
 			<%while(rs.next())
 			{
@@ -472,6 +486,7 @@ function confirmaFinalizacaoServico(servicoID){
 					 		<td><strong>Valor</strong></td>
 					 		<%} %>
 					 		<td><strong>Laboratório</strong></td>
+					 		<td><strong>Protocolo</strong></td>
 					 		<td><strong>Dt. Envio</strong></td>
 					 		<td><strong>Prev. Ret.</strong></td>
 					 		<td><strong>Ret. Real</strong></td>
@@ -482,15 +497,17 @@ function confirmaFinalizacaoServico(servicoID){
 					 	</tr>
 					 	<tr align="center">
 					 		<td><%=rs11.getString("nome") %></td>
+					 		<td><%=rs11.getString("qtdProduto") %></td>
 					 		<%if(nivel.equals("1") || nivel.equals("2")) {%>
 					 		<td><%=formato.format(rs11.getFloat("valor")) %></td>
 					 		<%} %>
-					 		<td><%=rs11.getString("qtdProduto") %></td>
+		
 					 		<%if(!rs11.getString("laboratorio").equals("Digite")){ %>
 					 			<td style="max-width: 90px;"><input type="text" id="tags" style="max-width: 90px;" value="<%=rs11.getString("laboratorio") %>" onblur="SalvaLaboratorio(<%=rs11.getString("produtoID") %>, <%=rs.getString("servicoID")%>, <%=rs11.getString("servicoprodutoID")%>, this, '<%=rs11.getString("fase")%>', <%=rs11.getString("prazo")%>)"/></td>					 			
 					 		<%}else{ %>
 								<td style="max-width: 90px;"><input type="text" style="max-width: 90px;" name="laboratorio" id="tags" placeholder="Digite" onblur="SalvaLaboratorio(<%=rs11.getString("produtoID") %>, <%=rs.getString("servicoID")%>, <%=rs11.getString("servicoprodutoID")%>, this, '<%=rs11.getString("fase")%>', <%=rs11.getString("prazo")%>)"/></td>					 			
 					 		<%} %>
+					 		<td><input type="text" id="prot<%=rs11.getString("servicoprodutoID") %>" value="<%=rs11.getString("protocolo") %>" onblur="insere_protocolo(<%=rs11.getString("produtoID") %>, <%=rs.getString("servicoID")%>, <%=rs11.getString("servicoprodutoID")%>, this)"/></td>
 					 		<%if(!rs11.getString("DataEnvio1").equals("0")){ %>
 					 			<td><input type="date" name="dataEnvio" id="de<%=rs11.getString("servicoprodutoID") %>" value="<%=rs11.getString("DataEnvio1") %>" readonly="readonly" /></td>
 					 		<%}else{ %>
