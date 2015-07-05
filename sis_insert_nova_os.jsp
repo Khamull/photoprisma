@@ -662,7 +662,7 @@ function verPonto_Calculo(val){
  <form method="post" name="form1" action="sis_insert_manager_servico.jsp" onsubmit="return verForm(this)">
  <table width="696" align="center" cellpadding="2" cellspacing="2">
   <tr bgcolor="#EEEEEE">
-  <td colspan="6" align="center"><strong>NOVO OR&Ccedil;AMENTO</strong><input  name="tipo" type="hidden" value="1" id="tipo"/></td>
+  <td colspan="6" align="center"><strong>NOVO OR&Ccedil;AMENTO</strong><input  name="tipo" type="hidden" value="0" id="tipo"/></td>
   </tr>
   
   <tr><TR><%if(rs02.next()){

@@ -18,6 +18,7 @@ Statement st02 = con.createStatement();
 Statement st03 = con.createStatement();
 Statement st04 = con.createStatement();
 Statement st05 = con.createStatement();
+Statement st06 = con.createStatement();
 %>
 
 
@@ -29,6 +30,7 @@ ResultSet rs02 = null;
 ResultSet rs03 = null;
 ResultSet rs04 = null;
 ResultSet rs05 = null;
+ResultSet rs06 = null;
 %>
 
 <%
@@ -43,7 +45,26 @@ rs = st.executeQuery(tipo.listaTiposAtivos());
 rs01 = st01.executeQuery(fornecedor.listaFornecedoresAtivos());
 //Pesquisa os dados do Produto
 rs02 = st02.executeQuery(produto.listaProdutosPorID());
-
+rs06 = st06.executeQuery(produto.listaProdutosPorID());
+String rotina = ""; 
+if(rs06.next())
+{
+	rotina = rs06.getString("rotina");
+	if(rotina.equals("0"))
+	{
+		rotina = "1";
+	}
+	else{
+		if(rotina.equals("1"))
+		{
+			rotina = "2";
+		}
+		if(rotina.equals("-1"))
+		{
+			rotina = "0";
+		}
+	}
+}
 %>
 
 <%
@@ -82,6 +103,11 @@ select_javascript = select_javascript.replace("\"", jsct);
 <title>FORTE SYSTEM</title>
 
 <script type="text/javascript">
+function RotinaSelecionada()
+{
+	document.getElementById("rotina").selectedIndex = <%=rotina%>
+}
+
 function verForm(){
 	
 	verPonto();
@@ -355,6 +381,9 @@ function isNumber(n) {
 function getMoney(valor){
 	return parseFloat(valor)*100;
 }
+
+window.onload = RotinaSelecionada;
+
 </script>
 
 <script type="text/javascript" src="js/jquery.js"></script>
@@ -413,13 +442,15 @@ function getMoney(valor){
   </tr>
   <tr>
  		<%if(rs02.getString("utilizacao").equals("M")) {%>
-    		<td align="left" colspan="2">É Material <input type="checkbox" name="material" value="1" id="material" onchange="validaMaterial()" checked="checked"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial" value="2" onchange="validaPossuir()"/></td>
+    		<td align="left" colspan="2">É Material <input type="checkbox" name="material1" value="1" id="material1" onchange="validaMaterial()" checked="checked" readonly="readonly" disabled="disabled"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial1" value="2" onchange="validaPossuir()" readonly="readonly" disabled="disabled"/></td>
+    		<input type="hidden" value="1" name="material"></input>
     	<%}
     	if(rs02.getString("utilizacao").equals("PM")){ %>
-    		<td align="left" colspan="2">É Material <input type="checkbox" name="material" value="1" id="material" onchange="validaMaterial()"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial" value="2" onchange="validaPossuir()" checked="checked"/></td>
+    		<td align="left" colspan="2">É Material <input type="checkbox" name="material1" value="1" id="material" onchange="validaMaterial()" readonly="readonly" disabled="disabled"/>Possui Material <input type="checkbox" name="possuiMaterial1" id="possuiMaterial" value="2" onchange="validaPossuir()" checked="checked" readonly="readonly" disabled="disabled"/></td>
+    		<input type="hidden" value="1" name="possuiMaterial"></input>
     	<%} %>
     	<%if(rs02.getString("utilizacao").equals("P")){ %>
-    		<td align="left" colspan="2">É Material <input type="checkbox" name="material" value="1" id="material" onchange="validaMaterial()"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial" value="2" onchange="validaPossuir()"/></td>
+    		<td align="left" colspan="2">É Material <input type="checkbox" name="material" value="1" id="material" onchange="validaMaterial()" readonly="readonly" disabled="disabled"/>Possui Material <input type="checkbox" name="possuiMaterial" id="possuiMaterial" value="2" onchange="validaPossuir()" readonly="readonly" disabled="disabled"/></td>
     	<%} %>	
     </tr>
   <tr>
@@ -492,7 +523,8 @@ function getMoney(valor){
     		<option value="1">Foto Produto</option>
     	</select>
     </td>
-    <td colspan="2" align="left"></td>
+    <td align="left">Prazo</td>
+    <td align="left"><input type="number" min="0" step="1" value="<%=rs02.getString("prazo") %>" name="prazo" style="text-align: right; width: 55px;" /></td>
   </tr>
   <tr>
     <td align="left"><input type="hidden" name="produtoID" value="<%=rs02.getString("produtoID") %>" /></td>

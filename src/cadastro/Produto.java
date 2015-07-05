@@ -284,8 +284,8 @@ public class Produto {
 	//Insere na Base de Dados
 	public String salvaProduto() {
 		String salvaProd = "INSERT INTO produto ";
-		salvaProd += "(tipoprodutoID, fornecedorID, nome, codigo, unidade, precoCusto, preco, estoqueminimo, estoque, lucro) VALUES";
-		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"' ) ";
+		salvaProd += "(tipoprodutoID, fornecedorID, utilizacao, qtdUtilizar, idsMateriais, nome, codigo, unidade, precoCusto, preco, precoServico, estoqueminimo, estoque, lucro, lucroServico, rotina, Prazo) VALUES";
+		salvaProd += "('"+tipo.tipoProdutoID+"', '"+fornecedor.fornecedorID+"', '"+utilizacao+"', '"+ListaQtdMatariais+"', '"+listaIDMaterias+"', '"+nome+"', '"+codigo+"', '"+unidade+"', '"+precoCusto+"', '"+preco+"', '"+precoServico+"', '"+estoqueMinimo+"', '"+estoque+"', '"+lucro+"', '"+lucroServico+"','"+Rotina+"','"+Prazo+"' ) ";
 		
 		return salvaProd;
 	}

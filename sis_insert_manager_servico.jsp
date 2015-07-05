@@ -68,7 +68,7 @@ else{
 	servico.OS = "1";
 }
 if(request.getParameter("tipo") != null){
-servico.tipo = Integer.parseInt(request.getParameter("tipo"));
+	servico.tipo = Integer.parseInt(request.getParameter("tipo"));
 }else
 {
 	servico.tipo = 0;

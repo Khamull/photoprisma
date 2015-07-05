@@ -75,6 +75,7 @@ else{
 	produto.estoqueMinimo 				= Integer.parseInt(request.getParameter("estoqueMinimo"));
 	produto.Rotina						= Integer.parseInt(request.getParameter("rotina"));
 	produto.precoServico				= Float.parseFloat(request.getParameter("precoVendaServico"));
+	produto.utilizacao = "P";
 }
 
 %>
